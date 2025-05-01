@@ -1,112 +1,74 @@
-const express = require('express');
-const multer = require('multer');
-const cors = require('cors');
-const nodemailer = require('nodemailer');
-const dotenv = require('dotenv');
+<script>
+  async function submitForm() {
+    if (!validateForm()) return;
 
-dotenv.config();
+    const form = document.getElementById("VehicleForm");
+    const formData = new FormData(form);
 
-const app = express();
-const port = process.env.PORT || 3000;
-
-// Allow requests from your frontend
-const allowedOrigins = ['https://alkhooryengineering.github.io'];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+    if (selectedPhotos.length === 0) {
+      alert("Please upload at least one photo.");
+      return;
     }
-  },
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type']
-}));
 
-// Multer setup
-const upload = multer({
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB limit
-});
+    selectedPhotos.forEach((photo, index) => {
+      formData.append("photo" + index, photo);
+    });
 
-// Endpoint
-app.post('/send-pdf', upload.any(), async (req, res) => {
-  try {
-    // Extract data from request body
-    const {
-      vehicle,
-      ake_department,
-      reason_of_trip,
-      date_field,
-      driver_name,
-      other_department
-    } = req.body;
-
-    const departmentToUse = ake_department === "Other" ? other_department : ake_department;
-
-    // Create email body (HTML Table)
-    const emailBody = `
-      <h3>New Vehicle Form Submission</h3>
-      <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse;">
-        <tr>
-          <th>Vehicle</th>
-          <th>AKE Department</th>
-          <th>Reason of Trip</th>
-          <th>Date</th>
-          <th>Driver Name</th>
-        </tr>
-        <tr>
-          <td>${vehicle || '-'}</td>
-          <td>${departmentToUse || '-'}</td>
-          <td>${reason_of_trip || '-'}</td>
-          <td>${date_field || '-'}</td>
-          <td>${driver_name || '-'}</td>
-        </tr>
+    // Create the table structure for the email body
+    const emailTable = `
+      <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+        <tr><th colspan="2" style="text-align: center;">AKE Vehicle Form Submission</th></tr>
+        <tr><td><strong>Vehicle:</strong></td><td>${formData.get("vehicle")}</td></tr>
+        <tr><td><strong>AKE Department:</strong></td><td>${formData.get("ake_department")}</td></tr>
+        <tr><td><strong>Reason of Trip:</strong></td><td>${formData.get("reason_of_trip")}</td></tr>
+        <tr><td><strong>Date:</strong></td><td>${formData.get("date_field")}</td></tr>
+        <tr><td><strong>Driver Name:</strong></td><td>${formData.get("driver_name")}</td></tr>
+        <tr><td><strong>Signature:</strong></td><td><img src="${signatureCanvas.toDataURL()}" alt="Signature" style="width: 100px; height: auto;" /></td></tr>
+        <tr><td><strong>Photos:</strong></td><td>${selectedPhotos.length > 0 ? `<ul>${selectedPhotos.map(photo => `<li><img src="${URL.createObjectURL(photo)}" width="50px" /></li>`).join('')}</ul>` : 'No photos uploaded'}</td></tr>
       </table>
     `;
 
-    // Handle uploaded files
-    const pdfFile = req.files.find(f => f.originalname.endsWith('.pdf'));
-    const imageFiles = req.files.filter(f => f.fieldname.startsWith('photo'));
-
-    // Nodemailer setup
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    // Email options
-    const mailOptions = {
-      from: `"${driver_name}" <${process.env.EMAIL_USER}>`,
-      to: process.env.RECEIVER_EMAIL,
-      subject: 'New AKE Vehicle Form Submission',
-      html: emailBody,
-      attachments: [
-        ...(pdfFile ? [{
-          filename: 'form.pdf',
-          content: pdfFile.buffer
-        }] : []),
-        ...imageFiles.map(file => ({
-          filename: file.originalname,
-          content: file.buffer
-        }))
-      ]
+    // PDF generation and data sending to the server
+    const opt = {
+      margin: 0,
+      filename: 'vehicle_form.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
-    // Send email
-    await transporter.sendMail(mailOptions);
+    html2pdf().set(opt).from(document.getElementById('formToPDF')).toPdf().get('pdf').then(async function(pdf) {
+      const pdfBlob = pdf.output("blob");
+      formData.append("pdf", pdfBlob, "vehicle_form.pdf");
 
-    res.status(200).send('Email sent successfully');
-  } catch (error) {
-    console.error('Email sending failed:', error);
-    res.status(500).send('Email sending failed');
+      const messageDiv = document.getElementById("message");
+      try {
+        const response = await fetch("https://ake-form-backend.onrender.com/send-pdf", {
+          method: "POST",
+          body: formData,
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            emailTable: emailTable, // Send the email in tabular format
+            pdfBlob: pdfBlob
+          })
+        });
+
+        if (response.ok) {
+          messageDiv.textContent = "✅ Email Delivered";
+          messageDiv.style.color = "green";
+          document.getElementById("submitBtn").style.display = "none";
+        } else {
+          messageDiv.textContent = "❌ Submission failed. Please try again.";
+          messageDiv.style.color = "red";
+        }
+      } catch (error) {
+        console.error("Error during submission:", error);
+        messageDiv.textContent = "❌ Submission failed. Please try again.";
+        messageDiv.style.color = "red";
+      }
+    });
   }
-});
-
-// Start server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+</script>
