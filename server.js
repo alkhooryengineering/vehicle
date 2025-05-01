@@ -1,114 +1,94 @@
 const express = require("express");
-const nodemailer = require("nodemailer");
 const multer = require("multer");
-const path = require("path");
-
+const nodemailer = require("nodemailer");
+const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware to parse form data and handle file uploads
+// Enable CORS and JSON parsing
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Configure Multer for file uploads
-const storage = multer.memoryStorage();  // Store files in memory
+// Set up multer to store uploaded files in memory
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// POST endpoint to handle form submission
+// Email sending route
 app.post("/send-pdf", upload.any(), async (req, res) => {
   try {
-    // Form fields from the submitted form data
-    const { vehicle, reason_of_trip, driver_name, date_field } = req.body;
+    const {
+      vehicle,
+      ake_department,
+      other_department,
+      reason_of_trip,
+      date_field,
+      driver_name
+    } = req.body;
 
-    // Files (photos and PDF) uploaded
-    const photos = req.files.filter(file => file.fieldname.startsWith("photo"));
-    const pdfFile = req.files.find(file => file.fieldname === "pdf");
+    // Handle department value if "Other" was selected
+    const department = ake_department === "Other" ? other_department : ake_department;
 
-    // Email body content: Begin building the HTML email with a table structure
-    let emailBody = `
+    // Build the HTML table for the email body
+    const emailBody = `
       <h3>New Vehicle Form Submission</h3>
-      <table border="1" cellpadding="5" cellspacing="0">
-        <tr><th>Field</th><th>Data</th></tr>
-        <tr><td><strong>Vehicle</strong></td><td>${vehicle}</td></tr>
-        <tr><td><strong>Reason of Trip</strong></td><td>${reason_of_trip}</td></tr>
-        <tr><td><strong>Driver Name</strong></td><td>${driver_name}</td></tr>
-        <tr><td><strong>Date</strong></td><td>${date_field}</td></tr>
-    `;
-
-    // Add photos to the email body (if any)
-    if (photos.length > 0) {
-      emailBody += `<tr><td><strong>Uploaded Photos</strong></td><td>`;
-      photos.forEach((photo, index) => {
-        emailBody += `<img src="cid:photo${index}" alt="photo${index}" width="100" style="margin: 5px;" />`;
-      });
-      emailBody += `</td></tr>`;
-    }
-
-    // Add signature (if available)
-    if (req.body.signature) {
-      emailBody += `
-        <tr><td><strong>Signature</strong></td><td><img src="cid:signature" alt="signature" width="150" /></td></tr>
-      `;
-    }
-
-    // Close the table in the email body
-    emailBody += `
+      <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">
+        <tr><th align="left">Field</th><th align="left">Data</th></tr>
+        <tr><td>Vehicle</td><td>${vehicle}</td></tr>
+        <tr><td>AKE Department</td><td>${department}</td></tr>
+        <tr><td>Reason of Trip</td><td>${reason_of_trip}</td></tr>
+        <tr><td>Date</td><td>${date_field}</td></tr>
+        <tr><td>Driver Name</td><td>${driver_name}</td></tr>
       </table>
-      <p><strong>Submitted by:</strong> ${driver_name}</p>
-      <p><strong>Date:</strong> ${date_field}</p>
     `;
 
-    // Create a transport object using SMTP (you can use Gmail or any other provider)
+    // Separate the files from the request
+    const pdfFile = req.files.find(file => file.fieldname === "pdf");
+    const photos = req.files.filter(file => file.fieldname.startsWith("photo"));
+
+    // Email configuration
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,  // Store email credentials in environment variables
-        pass: process.env.EMAIL_PASS
+        user: process.env.EMAIL_USER, // Set this in your Render environment
+        pass: process.env.EMAIL_PASS  // Set this in your Render environment
       }
     });
 
-    // Prepare email options
+    // Email options
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: "recipient@example.com",  // Replace with your recipient email address
-      subject: "New Vehicle Form Submission",
-      html: emailBody, // HTML content for the email body
+      to: "your-recipient@example.com", // Replace with actual recipient
+      subject: "New AKE Vehicle Form Submission",
+      html: emailBody,
       attachments: [
-        // Attach the PDF
-        {
-          filename: pdfFile.originalname,
-          content: pdfFile.buffer,
-          encoding: "base64",
-          contentType: "application/pdf"
-        },
-        // Attach photos as inline images
-        ...photos.map((photo, index) => ({
+        // Attach the PDF file
+        pdfFile
+          ? {
+              filename: pdfFile.originalname,
+              content: pdfFile.buffer,
+              contentType: "application/pdf"
+            }
+          : null,
+        // Optional: Attach uploaded photos
+        ...photos.map((photo) => ({
           filename: photo.originalname,
           content: photo.buffer,
-          encoding: "base64",
-          cid: `photo${index}`  // Use CID for inline images
-        })),
-        // Attach signature image as inline image (if provided)
-        req.body.signature ? {
-          filename: "signature.png",
-          content: req.body.signature, // Assume signature is sent as a data URL
-          encoding: "base64",
-          cid: "signature"  // CID for inline image
-        } : null
-      ].filter(Boolean) // Remove any null values (if no signature)
+          contentType: photo.mimetype
+        }))
+      ].filter(Boolean) // Remove any nulls if PDF is not attached
     };
 
-    // Send the email
+    // Send email
     await transporter.sendMail(mailOptions);
-
     res.status(200).send("✅ Email Delivered");
   } catch (error) {
-    console.error("Error during form submission:", error);
+    console.error("❌ Email sending error:", error);
     res.status(500).send("❌ Submission failed. Please try again.");
   }
 });
 
-// Start the server
+// Start server
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`🚀 Server running on port ${port}`);
 });
