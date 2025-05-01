@@ -24,7 +24,7 @@ app.post("/send-pdf", upload.any(), async (req, res) => {
     const photos = req.files.filter(file => file.fieldname.startsWith("photo"));
     const pdfFile = req.files.find(file => file.fieldname === "pdf");
 
-    // Email body content
+    // Email body content: Begin building the HTML email with a table structure
     let emailBody = `
       <h3>New Vehicle Form Submission</h3>
       <table border="1" cellpadding="5" cellspacing="0">
@@ -35,7 +35,7 @@ app.post("/send-pdf", upload.any(), async (req, res) => {
         <tr><td><strong>Date</strong></td><td>${date_field}</td></tr>
     `;
 
-    // Add photos to email body
+    // Add photos to the email body (if any)
     if (photos.length > 0) {
       emailBody += `<tr><td><strong>Uploaded Photos</strong></td><td>`;
       photos.forEach((photo, index) => {
@@ -45,13 +45,15 @@ app.post("/send-pdf", upload.any(), async (req, res) => {
     }
 
     // Add signature (if available)
-    emailBody += `
-      <tr><td><strong>Signature</strong></td><td><img src="cid:signature" alt="signature" width="150" /></td></tr>
-    </table>
-    `;
+    if (req.body.signature) {
+      emailBody += `
+        <tr><td><strong>Signature</strong></td><td><img src="cid:signature" alt="signature" width="150" /></td></tr>
+      `;
+    }
 
-    // Add footer with submitted information
+    // Close the table in the email body
     emailBody += `
+      </table>
       <p><strong>Submitted by:</strong> ${driver_name}</p>
       <p><strong>Date:</strong> ${date_field}</p>
     `;
@@ -65,12 +67,12 @@ app.post("/send-pdf", upload.any(), async (req, res) => {
       }
     });
 
-    // Email options
+    // Prepare email options
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: "recipient@example.com",  // Replace with your recipient email address
       subject: "New Vehicle Form Submission",
-      html: emailBody,
+      html: emailBody, // HTML content for the email body
       attachments: [
         // Attach the PDF
         {
@@ -79,21 +81,21 @@ app.post("/send-pdf", upload.any(), async (req, res) => {
           encoding: "base64",
           contentType: "application/pdf"
         },
-        // Attach the photos
+        // Attach photos as inline images
         ...photos.map((photo, index) => ({
           filename: photo.originalname,
           content: photo.buffer,
           encoding: "base64",
           cid: `photo${index}`  // Use CID for inline images
         })),
-        // Attach signature image (if available)
-        {
+        // Attach signature image as inline image (if provided)
+        req.body.signature ? {
           filename: "signature.png",
           content: req.body.signature, // Assume signature is sent as a data URL
           encoding: "base64",
           cid: "signature"  // CID for inline image
-        }
-      ]
+        } : null
+      ].filter(Boolean) // Remove any null values (if no signature)
     };
 
     // Send the email
