@@ -35,6 +35,9 @@ app.post('/send-pdf', upload.any(), async (req, res) => {
     // Collect form data
     const { vehicle, akeDepartment, reasonOfTrip, date, driverName } = req.body;
 
+    // Log the values to make sure they are correct
+    console.log("Form Data Received:", { vehicle, akeDepartment, reasonOfTrip, date, driverName });
+
     // Create the tabular formatted email body
     const emailBody = `
       <h3>New Vehicle Form Submission:</h3>
@@ -55,6 +58,9 @@ app.post('/send-pdf', upload.any(), async (req, res) => {
         </tr>
       </table>
     `;
+
+    // Log the email body to ensure the HTML is correct
+    console.log("Email Body (HTML):", emailBody);
 
     // Handle attachments (PDF and images)
     const pdfFile = req.files.find(f => f.originalname.endsWith('.pdf'));
