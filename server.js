@@ -1,98 +1,112 @@
-async function submitForm() {
-  if (!validateForm()) return;
+const express = require("express");
+const nodemailer = require("nodemailer");
+const multer = require("multer");
+const path = require("path");
 
-  const form = document.getElementById("VehicleForm");
-  const formData = new FormData(form);
+const app = express();
+const port = process.env.PORT || 3000;
 
-  // Add form data to FormData object manually to ensure it's captured correctly
-  formData.append("vehicle", document.getElementById("vehicle").value);
-  formData.append("reason_of_trip", document.getElementById("reason_of_trip").value);
-  formData.append("driver_name", document.getElementById("driver_name").value);
-  formData.append("date_field", document.getElementById("date_field").value);
-  
-  // Add photos if selected
-  if (selectedPhotos.length === 0) {
-    alert("Please upload at least one photo.");
-    return;
-  }
+// Middleware to parse form data and handle file uploads
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-  selectedPhotos.forEach((photo, index) => {
-    formData.append("photo" + index, photo);
-  });
+// Configure Multer for file uploads
+const storage = multer.memoryStorage();  // Store files in memory
+const upload = multer({ storage: storage });
 
-  // Create a message body to send in the email
-  let emailBody = `
-    <h3>New Vehicle Form Submission</h3>
-    <table border="1" cellpadding="5" cellspacing="0">
-      <tr><th>Field</th><th>Data</th></tr>
-      <tr><td><strong>Vehicle</strong></td><td>${document.getElementById("vehicle").value}</td></tr>
-      <tr><td><strong>Reason of Trip</strong></td><td>${document.getElementById("reason_of_trip").value}</td></tr>
-      <tr><td><strong>Driver Name</strong></td><td>${document.getElementById("driver_name").value}</td></tr>
-      <tr><td><strong>Date</strong></td><td>${document.getElementById("date_field").value}</td></tr>
-  `;
+// POST endpoint to handle form submission
+app.post("/send-pdf", upload.any(), async (req, res) => {
+  try {
+    // Form fields from the submitted form data
+    const { vehicle, reason_of_trip, driver_name, date_field } = req.body;
 
-  // Check for uploaded photos and add them to the email body
-  if (selectedPhotos.length > 0) {
-    emailBody += `
-      <tr><td><strong>Uploaded Photos</strong></td><td>`;
-    selectedPhotos.forEach(photo => {
-      emailBody += `<img src="${URL.createObjectURL(photo)}" alt="photo" width="100" style="margin: 5px;" />`;
-    });
-    emailBody += `</td></tr>`;
-  }
+    // Files (photos and PDF) uploaded
+    const photos = req.files.filter(file => file.fieldname.startsWith("photo"));
+    const pdfFile = req.files.find(file => file.fieldname === "pdf");
 
-  // Add signature (if available)
-  const signatureCanvas = document.getElementById("signature");
-  const signatureData = signatureCanvas.toDataURL("image/png");
-  emailBody += `
-      <tr><td><strong>Signature</strong></td><td><img src="${signatureData}" alt="signature" width="150" /></td></tr>
-    </table>
-  `;
+    // Email body content
+    let emailBody = `
+      <h3>New Vehicle Form Submission</h3>
+      <table border="1" cellpadding="5" cellspacing="0">
+        <tr><th>Field</th><th>Data</th></tr>
+        <tr><td><strong>Vehicle</strong></td><td>${vehicle}</td></tr>
+        <tr><td><strong>Reason of Trip</strong></td><td>${reason_of_trip}</td></tr>
+        <tr><td><strong>Driver Name</strong></td><td>${driver_name}</td></tr>
+        <tr><td><strong>Date</strong></td><td>${date_field}</td></tr>
+    `;
 
-  // Add a footer message
-  emailBody += `
-    <p><strong>Submitted by:</strong> ${document.getElementById("driver_name").value}</p>
-    <p><strong>Date:</strong> ${document.getElementById("date_field").value}</p>
-  `;
-
-  // Set up HTML2PDF options
-  const opt = {
-    margin: 0,
-    filename: 'vehicle_form.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-  };
-
-  // Generate PDF from form
-  html2pdf().set(opt).from(document.getElementById('formToPDF')).toPdf().get('pdf').then(async function(pdf) {
-    const pdfBlob = pdf.output("blob");
-    formData.append("pdf", pdfBlob, "vehicle_form.pdf");
-
-    // Now send the form data to the backend
-    const messageDiv = document.getElementById("message");
-    try {
-      const response = await fetch("https://ake-form-backend.onrender.com/send-pdf", {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+    // Add photos to email body
+    if (photos.length > 0) {
+      emailBody += `<tr><td><strong>Uploaded Photos</strong></td><td>`;
+      photos.forEach((photo, index) => {
+        emailBody += `<img src="cid:photo${index}" alt="photo${index}" width="100" style="margin: 5px;" />`;
       });
-
-      if (response.ok) {
-        messageDiv.textContent = "✅ Email Delivered";
-        messageDiv.style.color = "green";
-        document.getElementById("submitBtn").style.display = "none";
-      } else {
-        messageDiv.textContent = "❌ Submission failed. Please try again.";
-        messageDiv.style.color = "red";
-      }
-    } catch (error) {
-      console.error("Error during submission:", error);
-      messageDiv.textContent = "❌ Submission failed. Please try again.";
-      messageDiv.style.color = "red";
+      emailBody += `</td></tr>`;
     }
-  });
-}
+
+    // Add signature (if available)
+    emailBody += `
+      <tr><td><strong>Signature</strong></td><td><img src="cid:signature" alt="signature" width="150" /></td></tr>
+    </table>
+    `;
+
+    // Add footer with submitted information
+    emailBody += `
+      <p><strong>Submitted by:</strong> ${driver_name}</p>
+      <p><strong>Date:</strong> ${date_field}</p>
+    `;
+
+    // Create a transport object using SMTP (you can use Gmail or any other provider)
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,  // Store email credentials in environment variables
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    // Email options
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: "recipient@example.com",  // Replace with your recipient email address
+      subject: "New Vehicle Form Submission",
+      html: emailBody,
+      attachments: [
+        // Attach the PDF
+        {
+          filename: pdfFile.originalname,
+          content: pdfFile.buffer,
+          encoding: "base64",
+          contentType: "application/pdf"
+        },
+        // Attach the photos
+        ...photos.map((photo, index) => ({
+          filename: photo.originalname,
+          content: photo.buffer,
+          encoding: "base64",
+          cid: `photo${index}`  // Use CID for inline images
+        })),
+        // Attach signature image (if available)
+        {
+          filename: "signature.png",
+          content: req.body.signature, // Assume signature is sent as a data URL
+          encoding: "base64",
+          cid: "signature"  // CID for inline image
+        }
+      ]
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).send("✅ Email Delivered");
+  } catch (error) {
+    console.error("Error during form submission:", error);
+    res.status(500).send("❌ Submission failed. Please try again.");
+  }
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
