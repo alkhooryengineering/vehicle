@@ -38,26 +38,35 @@ app.post('/send-pdf', upload.any(), async (req, res) => {
     // Log the values to make sure they are correct
     console.log("Form Data Received:", { vehicle, akeDepartment, reasonOfTrip, date, driverName });
 
-    // Create the tabular formatted email body
-    const emailBody = `
+    // Create the tabular formatted email body dynamically
+    let emailBody = `
       <h3>New Vehicle Form Submission:</h3>
-      <table border="1" cellpadding="5" cellspacing="0">
+      <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
         <tr>
-          <th>Vehicle</th>
-          <th>AKE Department</th>
-          <th>Reason of Trip</th>
-          <th>Date</th>
-          <th>Driver Name</th>
-        </tr>
+          <th style="text-align: left; padding: 5px;">Field</th>
+          <th style="text-align: left; padding: 5px;">Value</th>
+        </tr>`;
+
+    // Dynamically loop through the form fields and create rows for the table
+    const formFields = [
+      { label: 'Vehicle', value: vehicle },
+      { label: 'AKE Department', value: akeDepartment },
+      { label: 'Reason of Trip', value: reasonOfTrip },
+      { label: 'Date', value: date },
+      { label: 'Driver Name', value: driverName },
+    ];
+
+    // Add rows dynamically to the email body
+    formFields.forEach(field => {
+      emailBody += `
         <tr>
-          <td>${vehicle}</td>
-          <td>${akeDepartment}</td>
-          <td>${reasonOfTrip}</td>
-          <td>${date}</td>
-          <td>${driverName}</td>
-        </tr>
-      </table>
-    `;
+          <td style="padding: 5px;">${field.label}</td>
+          <td style="padding: 5px;">${field.value}</td>
+        </tr>`;
+    });
+
+    // Closing table
+    emailBody += `</table>`;
 
     // Log the email body to ensure the HTML is correct
     console.log("Email Body (HTML):", emailBody);
