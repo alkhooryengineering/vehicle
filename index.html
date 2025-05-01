@@ -161,6 +161,7 @@
     <h1>AKE Vehicle Form</h1>
 
     <form id="VehicleForm">
+
       
       <!-- Vehicle Dropdown -->
       <label for="vehicle">Vehicle:</label>
@@ -173,6 +174,8 @@
         <option value="Other">Other</option>
       </select>
 
+
+      
       <!-- AKE Department -->
       <label>AKE Department:</label>
       <div class="radio-group">
@@ -182,6 +185,8 @@
       </div>
       <input type="text" id="otherDepartment" name="otherDepartment" placeholder="Enter department name" style="display:none;" />
 
+  
+      
       <!-- Reason to trip -->
       <label for="Reason of trip">Reason of Trip:</label>
       <select id="Reason of trip" name="Reason of trip" onchange="toggleOtherField(this)" required>
@@ -193,9 +198,12 @@
         <option value="Site">Site</option>
       </select>
 
- <!-- Date -->
+     
+      <!-- Date -->
       <label for="dateField">Date:</label>
       <input type="date" id="dateField" name="dateField" required />
+      
+ 
       
       <!-- Driver Name -->
       <label for="Driver Name">Driver Name:</label>
@@ -216,10 +224,14 @@
       <input type="file" id="photosInput" accept="image/*" multiple />
       <div id="photoPreview" style="display: flex; flex-wrap: wrap;"></div>
 
+  
+      
       <!-- Signature -->
       <label for="signature">Signature:</label>
       <canvas id="signature" class="signature-pad" required></canvas>
 
+
+      
       <!-- Submit -->
       <button id="submitBtn" type="button" onclick="submitForm()">Submit</button>
       <div id="message" class="message"></div>
