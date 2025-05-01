@@ -32,14 +32,35 @@ const upload = multer({
 // POST endpoint to receive the form
 app.post('/send-pdf', upload.any(), async (req, res) => {
   try {
-    const pdfFile = req.files.find(f => f.originalname.endsWith('.pdf'));
+    // Collect form data
+    const { vehicle, akeDepartment, reasonOfTrip, date, driverName } = req.body;
 
-    // 📸 Collect all photo files (photo0, photo1, ..., photo4)
+    // Create the tabular formatted email body
+    const emailBody = `
+      <h3>New Vehicle Form Submission:</h3>
+      <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+          <th>Vehicle</th>
+          <th>AKE Department</th>
+          <th>Reason of Trip</th>
+          <th>Date</th>
+          <th>Driver Name</th>
+        </tr>
+        <tr>
+          <td>${vehicle}</td>
+          <td>${akeDepartment}</td>
+          <td>${reasonOfTrip}</td>
+          <td>${date}</td>
+          <td>${driverName}</td>
+        </tr>
+      </table>
+    `;
+
+    // Handle attachments (PDF and images)
+    const pdfFile = req.files.find(f => f.originalname.endsWith('.pdf'));
     const imageFiles = req.files.filter(f => f.fieldname.startsWith('photo'));
 
-    const { company, otherCompany } = req.body;
-    const displayName = company === 'Other' ? otherCompany : company;
-
+    // Set up nodemailer transport
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -48,10 +69,11 @@ app.post('/send-pdf', upload.any(), async (req, res) => {
       },
     });
 
+    // Email options with attachments and formatted body
     const attachments = [
       {
         filename: 'order.pdf',
-        content: pdfFile.buffer,
+        content: pdfFile ? pdfFile.buffer : '',
       },
       ...imageFiles.map(file => ({
         filename: file.originalname,
@@ -60,13 +82,14 @@ app.post('/send-pdf', upload.any(), async (req, res) => {
     ];
 
     const mailOptions = {
-      from: `"${displayName}" <${process.env.EMAIL_USER}>`,
+      from: `"${driverName}" <${process.env.EMAIL_USER}>`,
       to: process.env.RECEIVER_EMAIL,
       subject: 'New Order Form Submission',
-      text: `A new order form has been submitted by ${displayName}.`,
+      html: emailBody,  // Use HTML content for the table
       attachments,
     };
 
+    // Send the email
     await transporter.sendMail(mailOptions);
     res.status(200).send('Email sent successfully');
   } catch (error) {
