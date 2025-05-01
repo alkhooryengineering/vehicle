@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// ✅ Enable CORS for GitHub Pages frontend
+// Allow requests from your frontend
 const allowedOrigins = ['https://alkhooryengineering.github.io'];
 
 app.use(cors({
@@ -24,24 +24,30 @@ app.use(cors({
   allowedHeaders: ['Content-Type']
 }));
 
-// Set up Multer for file uploads
+// Multer setup
 const upload = multer({
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB limit
 });
 
-// POST endpoint to receive the form
+// Endpoint
 app.post('/send-pdf', upload.any(), async (req, res) => {
   try {
-    // Collect form data
-    const { vehicle, akeDepartment, reasonOfTrip, date, driverName } = req.body;
+    // Extract data from request body
+    const {
+      vehicle,
+      ake_department,
+      reason_of_trip,
+      date_field,
+      driver_name,
+      other_department
+    } = req.body;
 
-    // Log the values to make sure they are correct
-    console.log("Form Data Received:", { vehicle, akeDepartment, reasonOfTrip, date, driverName });
+    const departmentToUse = ake_department === "Other" ? other_department : ake_department;
 
-    // Create the tabular formatted email body
+    // Create email body (HTML Table)
     const emailBody = `
-      <h3>New Vehicle Form Submission:</h3>
-      <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
+      <h3>New Vehicle Form Submission</h3>
+      <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse;">
         <tr>
           <th>Vehicle</th>
           <th>AKE Department</th>
@@ -50,23 +56,20 @@ app.post('/send-pdf', upload.any(), async (req, res) => {
           <th>Driver Name</th>
         </tr>
         <tr>
-          <td>${vehicle}</td>
-          <td>${akeDepartment}</td>
-          <td>${reasonOfTrip}</td>
-          <td>${date}</td>
-          <td>${driverName}</td>
+          <td>${vehicle || '-'}</td>
+          <td>${departmentToUse || '-'}</td>
+          <td>${reason_of_trip || '-'}</td>
+          <td>${date_field || '-'}</td>
+          <td>${driver_name || '-'}</td>
         </tr>
       </table>
     `;
 
-    // Log the email body to ensure the HTML is correct
-    console.log("Email Body (HTML):", emailBody);
-
-    // Handle attachments (PDF and images)
+    // Handle uploaded files
     const pdfFile = req.files.find(f => f.originalname.endsWith('.pdf'));
     const imageFiles = req.files.filter(f => f.fieldname.startsWith('photo'));
 
-    // Set up nodemailer transport
+    // Nodemailer setup
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -75,28 +78,27 @@ app.post('/send-pdf', upload.any(), async (req, res) => {
       },
     });
 
-    // Email options with attachments and formatted body
-    const attachments = [
-      {
-        filename: 'order.pdf',
-        content: pdfFile ? pdfFile.buffer : '',
-      },
-      ...imageFiles.map(file => ({
-        filename: file.originalname,
-        content: file.buffer,
-      }))
-    ];
-
+    // Email options
     const mailOptions = {
-      from: `"${driverName}" <${process.env.EMAIL_USER}>`,
+      from: `"${driver_name}" <${process.env.EMAIL_USER}>`,
       to: process.env.RECEIVER_EMAIL,
-      subject: 'New Order Form Submission',
-      html: emailBody,  // Use HTML content for the table
-      attachments,
+      subject: 'New AKE Vehicle Form Submission',
+      html: emailBody,
+      attachments: [
+        ...(pdfFile ? [{
+          filename: 'form.pdf',
+          content: pdfFile.buffer
+        }] : []),
+        ...imageFiles.map(file => ({
+          filename: file.originalname,
+          content: file.buffer
+        }))
+      ]
     };
 
-    // Send the email
+    // Send email
     await transporter.sendMail(mailOptions);
+
     res.status(200).send('Email sent successfully');
   } catch (error) {
     console.error('Email sending failed:', error);
