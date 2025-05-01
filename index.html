@@ -193,21 +193,23 @@
         <option value="Site">Site</option>
       </select>
 
-      <!-- Quantity -->
-      <label for="Quantity">Material Quantity:</label>
-      <select id="Quantity" name="Quantity" onchange="toggleOtherField(this)" required>
-        <option value="">Select Quantity</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
+ <!-- Date -->
+      <label for="dateField">Date:</label>
+      <input type="date" id="dateField" name="dateField" required />
+      
+      <!-- Driver Name -->
+      <label for="Driver Name">Driver Name:</label>
+      <select id="Driver Name" name="Driver Name" onchange="toggleOtherField(this)" required>
+        <option value="">Select Driver</option>
+        <option value="Sohail">Sohail</option>
+        <option value="Amarjit">Amarjit</option>
+        <option value="Aruna">Aruna</option>
+        <option value="Ammar">Ammar</option>
+        <option value="Senthil">Senthil</option>
         <option value="Other">Other</option>
       </select>
 
-      <!-- Date -->
-      <label for="dateField">Date:</label>
-      <input type="date" id="dateField" name="dateField" required />
+     
 
       <!-- Uploads -->
       <label for="photosInput">Upload or Take Photos (up to 5):</label>
