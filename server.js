@@ -1,75 +1,31 @@
-const express = require('express');
-const multer = require('multer');
-const cors = require('cors');
-const nodemailer = require('nodemailer');
-const dotenv = require('dotenv');
-
-dotenv.config();
-
-const app = express();
-const port = process.env.PORT || 3000;
-
-// ✅ Enable CORS for GitHub Pages frontend
-const allowedOrigins = ['https://alkhooryengineering.github.io'];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type']
-}));
-
-// Set up Multer for file uploads
-const upload = multer({
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB limit
-});
-
-// POST endpoint to receive the form
 app.post('/send-pdf', upload.any(), async (req, res) => {
   try {
     // Collect form data
-    const { vehicle, akeDepartment, reasonOfTrip, date, driverName } = req.body;
+    const { vehicle, akeDepartment, reasonOfTrip, date, driverName, otherDepartment } = req.body;
 
     // Log the values to make sure they are correct
-    console.log("Form Data Received:", { vehicle, akeDepartment, reasonOfTrip, date, driverName });
+    console.log("Form Data Received:", { vehicle, akeDepartment, reasonOfTrip, date, driverName, otherDepartment });
 
-    // Create the tabular formatted email body dynamically
-    let emailBody = `
+    // Create the tabular formatted email body
+    const emailBody = `
       <h3>New Vehicle Form Submission:</h3>
-      <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+      <table border="1" cellpadding="5" cellspacing="0">
         <tr>
-          <th style="text-align: left; padding: 5px;">Field</th>
-          <th style="text-align: left; padding: 5px;">Value</th>
-        </tr>`;
-
-    // Dynamically loop through the form fields and create rows for the table
-    const formFields = [
-      { label: 'Vehicle', value: vehicle },
-      { label: 'AKE Department', value: akeDepartment },
-      { label: 'Reason of Trip', value: reasonOfTrip },
-      { label: 'Date', value: date },
-      { label: 'Driver Name', value: driverName },
-    ];
-
-    // Add rows dynamically to the email body
-    formFields.forEach(field => {
-      emailBody += `
+          <th>Vehicle</th>
+          <th>AKE Department</th>
+          <th>Reason of Trip</th>
+          <th>Date</th>
+          <th>Driver Name</th>
+        </tr>
         <tr>
-          <td style="padding: 5px;">${field.label}</td>
-          <td style="padding: 5px;">${field.value}</td>
-        </tr>`;
-    });
-
-    // Closing table
-    emailBody += `</table>`;
-
-    // Log the email body to ensure the HTML is correct
-    console.log("Email Body (HTML):", emailBody);
+          <td>${vehicle}</td>
+          <td>${akeDepartment === 'Other' ? otherDepartment : akeDepartment}</td> <!-- Handle "Other" dynamically -->
+          <td>${reasonOfTrip}</td>
+          <td>${date}</td>
+          <td>${driverName}</td>
+        </tr>
+      </table>
+    `;
 
     // Handle attachments (PDF and images)
     const pdfFile = req.files.find(f => f.originalname.endsWith('.pdf'));
@@ -111,9 +67,4 @@ app.post('/send-pdf', upload.any(), async (req, res) => {
     console.error('Email sending failed:', error);
     res.status(500).send('Email sending failed');
   }
-});
-
-// Start server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
 });
