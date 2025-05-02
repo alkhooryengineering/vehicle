@@ -175,7 +175,7 @@
         <option value="Other">Other</option>
       </select>
 
-          <!-- Odometer Field -->
+      <!-- Odometer Field -->
       <label for="odometer">Odometer (7 digits max):</label>
       <input type="number" id="odometer" name="odometer" placeholder="Enter Odometer reading" required />
 
@@ -232,8 +232,8 @@
     </footer>
   </div>
 
- <script>
-    // JavaScript code to ensure only 7 digits are entered in the odometer field
+  <script>
+    // Ensure only 7 digits are entered in the odometer field
     document.getElementById("odometer").addEventListener("input", function (e) {
       // Restrict to 7 digits
       if (this.value.length > 7) {
@@ -241,8 +241,6 @@
       }
     });
 
-  
-  <script>
     const signatureCanvas = document.getElementById("signature");
     const ctx = signatureCanvas.getContext("2d");
     let drawing = false;
@@ -308,76 +306,14 @@
       }
     }
 
-    function validateForm() {
-      const vehicle = document.getElementById("vehicle").value;
-      const reason = document.getElementById("reason_of_trip").value;
-      const driver = document.getElementById("driver_name").value;
-      const date = document.getElementById("date_field").value;
-      const signatureCanvas = document.getElementById("signature");
-      const ctx = signatureCanvas.getContext("2d");
-      const signatureData = ctx.getImageData(0, 0, signatureCanvas.width, signatureCanvas.height).data;
-
-      if (!vehicle || !reason || !driver || !date) {
-        alert("Please fill in all required fields properly.");
-        return false;
-      }
-
-      let isSigned = false;
-      for (let i = 0; i < signatureData.length; i += 4) {
-        if (signatureData[i + 3] !== 0) {
-          isSigned = true;
-          break;
-        }
-      }
-
-      if (!isSigned) {
-        alert("Please provide a signature.");
-        return false;
-      }
-
-      return true;
-    }
-
-    let selectedPhotos = [];
-
-    document.getElementById("photosInput").addEventListener("change", function (e) {
-      const files = Array.from(e.target.files);
-      if (selectedPhotos.length + files.length > 5) {
-        alert("You can upload a maximum of 5 photos.");
-        e.target.value = '';
-        return;
-      }
-
-      selectedPhotos = selectedPhotos.concat(files);
-      showPreviews();
-      e.target.value = '';
-    });
-
-    function showPreviews() {
-      const previewContainer = document.getElementById("photoPreview");
-      previewContainer.innerHTML = '';
-      selectedPhotos.forEach(file => {
-        const img = document.createElement("img");
-        img.src = URL.createObjectURL(file);
-        img.alt = `Photo preview ${file.name}`;
-        previewContainer.appendChild(img);
-      });
-    }
-
     async function submitForm() {
-      if (!validateForm()) return;
-
       const form = document.getElementById("VehicleForm");
       const formData = new FormData(form);
 
-      if (selectedPhotos.length === 0) {
-        alert("Please upload at least one photo.");
+      if (formData.get("odometer").length > 7) {
+        alert("Odometer value cannot be longer than 7 digits");
         return;
       }
-
-      selectedPhotos.forEach((photo, index) => {
-        formData.append("photo" + index, photo);
-      });
 
       const opt = {
         margin: 0,
@@ -400,17 +336,12 @@
           });
 
           if (response.ok) {
-            messageDiv.textContent = "✅ Email Delivered";
-            messageDiv.style.color = "green";
-            document.getElementById("submitBtn").style.display = "none";
+            messageDiv.textContent = "Form submitted successfully!";
           } else {
-            messageDiv.textContent = "❌ Submission failed. Please try again.";
-            messageDiv.style.color = "red";
+            messageDiv.textContent = "Error submitting form.";
           }
         } catch (error) {
-          console.error("Error during submission:", error);
-          messageDiv.textContent = "❌ Submission failed. Please try again.";
-          messageDiv.style.color = "red";
+          messageDiv.textContent = "Error submitting form.";
         }
       });
     }
