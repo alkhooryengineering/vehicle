@@ -213,7 +213,7 @@
       </select>
 
       <label for="photosInput">Upload or Take Photos (up to 5):</label>
-      <input type="file" id="photosInput" accept="image/*" multiple />
+      <input type="file" id="photosInput" accept="image/*" multiple onchange="previewImages()" />
       <div id="photoPreview" style="display: flex; flex-wrap: wrap;"></div>
 
       <label for="signature">Signature:</label>
@@ -235,11 +235,28 @@
   <script>
     // Ensure only 7 digits are entered in the odometer field
     document.getElementById("odometer").addEventListener("input", function (e) {
-      // Restrict to 7 digits
       if (this.value.length > 7) {
-        this.value = this.value.slice(0, 7);  // Truncate if it exceeds 7 digits
+        this.value = this.value.slice(0, 7);
       }
     });
+
+    function previewImages() {
+      const files = document.getElementById("photosInput").files;
+      const previewDiv = document.getElementById("photoPreview");
+
+      previewDiv.innerHTML = ""; // Clear existing preview
+      for (const file of files) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const imgElement = document.createElement("img");
+          imgElement.src = e.target.result;
+          previewDiv.appendChild(imgElement);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    }
 
     const signatureCanvas = document.getElementById("signature");
     const ctx = signatureCanvas.getContext("2d");
