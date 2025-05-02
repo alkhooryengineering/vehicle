@@ -1,4 +1,3 @@
-<!-- START OF HTML -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,6 +43,17 @@
       font-size: 22px;
     }
 
+    .signature-pad {
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      width: 100%;
+      height: auto;
+      max-height: 150px;
+      cursor: crosshair;
+      background-color: #f4f4f4;
+      box-sizing: border-box;
+    }
+
     label {
       margin-top: 10px;
       font-weight: bold;
@@ -87,6 +97,15 @@
       text-align: center;
     }
 
+    footer {
+      text-align: center;
+      font-size: 11px;
+      color: white;
+      margin-top: 20px;
+      background-color: #003366;
+      padding: 8px 0;
+    }
+
     .radio-group {
       display: flex;
       gap: 15px;
@@ -102,37 +121,11 @@
     }
 
     #photoPreview img {
-      width: 40px;
-      height: 40px;
+      width: 80px;
+      height: auto;
       margin: 5px;
       object-fit: cover;
       border-radius: 8px;
-    }
-
-    .odometer-wrapper {
-      display: flex;
-      justify-content: center;
-      gap: 5px;
-      margin-bottom: 15px;
-    }
-
-    .odometer-digit {
-      width: 40px;
-      height: 60px;
-      font-size: 24px;
-      text-align: center;
-      overflow-y: scroll;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    .signature-pad {
-      border: 2px dashed #ccc;
-      border-radius: 10px;
-      width: 100%;
-      height: 150px;
-      background-color: #f4f4f4;
-      cursor: crosshair;
     }
 
     @media print {
@@ -173,7 +166,7 @@
 
     <form id="VehicleForm">
       <label for="vehicle">Vehicle:</label>
-      <select id="vehicle" name="vehicle" onchange="toggleOtherField(this)" required>
+      <select id="vehicle" name="vehicle" aria-label="Vehicle Selection" onchange="toggleOtherField(this)" required>
         <option value="" disabled selected>Select Vehicle</option>
         <option value="A">A</option>
         <option value="B">B</option>
@@ -182,16 +175,9 @@
         <option value="Other">Other</option>
       </select>
 
-      <label for="odometer">Odometer Reading:</label>
-      <div class="odometer-wrapper" id="odometer">
-        <select name="odometer_digit_1" class="odometer-digit" required></select>
-        <select name="odometer_digit_2" class="odometer-digit" required></select>
-        <select name="odometer_digit_3" class="odometer-digit" required></select>
-        <select name="odometer_digit_4" class="odometer-digit" required></select>
-        <select name="odometer_digit_5" class="odometer-digit" required></select>
-        <select name="odometer_digit_6" class="odometer-digit" required></select>
-        <select name="odometer_digit_7" class="odometer-digit" required></select>
-      </div>
+      <!-- Odometer Field -->
+      <label for="odometer">Odometer (7 digits):</label>
+      <input type="number" id="odometer" name="odometer" min="1000000" max="9999999" placeholder="Enter 7-digit odometer" required />
 
       <label>AKE Department:</label>
       <div class="radio-group">
@@ -202,7 +188,7 @@
       <input type="text" id="otherDepartment" name="other_department" placeholder="Enter department name" style="display:none;" />
 
       <label for="reason_of_trip">Reason of Trip:</label>
-      <select id="reason_of_trip" name="reason_of_trip" onchange="toggleOtherField(this)" required>
+      <select id="reason_of_trip" name="reason_of_trip" aria-label="Reason of Trip" onchange="toggleOtherField(this)" required>
         <option value="" disabled selected>Mention Reason of Trip</option>
         <option value="Pick&Drop">Pick&Drop</option>
         <option value="Repairing">Repairing</option>
@@ -216,7 +202,7 @@
       <input type="date" id="date_field" name="date_field" required />
 
       <label for="driver_name">Driver Name:</label>
-      <select id="driver_name" name="driver_name" onchange="toggleOtherField(this)" required>
+      <select id="driver_name" name="driver_name" aria-label="Driver Name" onchange="toggleOtherField(this)" required>
         <option value="" disabled selected>Select Driver</option>
         <option value="Sohail">Sohail</option>
         <option value="Amarjit">Amarjit</option>
@@ -247,38 +233,17 @@
   </div>
 
   <script>
-    // Populate odometer digits
-    const digitSelects = document.querySelectorAll('.odometer-digit');
-    digitSelects.forEach(select => {
-      for (let i = 0; i <= 9; i++) {
-        const option = document.createElement('option');
-        option.value = i;
-        option.text = i;
-        select.appendChild(option);
-      }
+    const signatureCanvas = document.getElementById("signature");
+    const ctx = signatureCanvas.getContext("2d");
+    let drawing = false;
+
+    signatureCanvas.addEventListener("mousedown", () => drawing = true);
+    signatureCanvas.addEventListener("mouseup", () => {
+      drawing = false;
+      ctx.beginPath();
     });
+    signatureCanvas.addEventListener("mousemove", draw);
 
-    // Existing canvas signature drawing code here (unchanged)...
-
-    // Toggle other field visibility
-    function toggleOtherDepartment(show) {
-      document.getElementById("otherDepartment").style.display = show ? "block" : "none";
-    }
-
-    function toggleOtherField(selectElement) {
-      if (selectElement.value === "Other") {
-        const input = document.createElement("input");
-        input.type = "text";
-        input.name = selectElement.name;
-        input.placeholder = "Type Please";
-        input.required = true;
-        selectElement.parentNode.replaceChild(input, selectElement);
-      }
-    }
-
-    // ... Keep rest of the JavaScript (submission logic, signature handling, photo preview, etc.)
-
-  </script>
-</body>
-</html>
-<!-- END OF HTML -->
+    signatureCanvas.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      drawing
