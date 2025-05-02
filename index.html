@@ -175,9 +175,9 @@
         <option value="Other">Other</option>
       </select>
 
-      <!-- Odometer Field -->
+          <!-- Odometer Field -->
       <label for="odometer">Odometer (7 digits max):</label>
-      <input type="number" id="odometer" name="odometer" placeholder="Enter Odometer reading" maxlength="7" required />
+      <input type="number" id="odometer" name="odometer" placeholder="Enter Odometer reading" required />
 
       <label>AKE Department:</label>
       <div class="radio-group">
@@ -232,6 +232,16 @@
     </footer>
   </div>
 
+ <script>
+    // JavaScript code to ensure only 7 digits are entered in the odometer field
+    document.getElementById("odometer").addEventListener("input", function (e) {
+      // Restrict to 7 digits
+      if (this.value.length > 7) {
+        this.value = this.value.slice(0, 7);  // Truncate if it exceeds 7 digits
+      }
+    });
+
+  
   <script>
     const signatureCanvas = document.getElementById("signature");
     const ctx = signatureCanvas.getContext("2d");
