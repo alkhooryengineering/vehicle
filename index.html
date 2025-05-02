@@ -244,6 +244,12 @@
       const files = document.getElementById("photosInput").files;
       const previewDiv = document.getElementById("photoPreview");
 
+      if (files.length > 5) {
+        alert("You can only upload up to 5 photos.");
+        document.getElementById("photosInput").value = ''; // Reset the file input if more than 5 files are selected
+        return;
+      }
+
       previewDiv.innerHTML = ""; // Clear existing preview
       for (const file of files) {
         const reader = new FileReader();
