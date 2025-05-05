@@ -168,10 +168,10 @@
       <center>
         <div style="display: inline-flex; align-items: center; gap: 20px; white-space: nowrap;">
           <label style="display: inline-flex; align-items: center; gap: 5px;">
-            <input type="radio" name="trip_status" value="start"> <span>Trip Start</span>
+            <input type="radio" name="trip_phase" value="start"> <span>Trip Start</span>
           </label>
           <label style="display: inline-flex; align-items: center; gap: 5px;">
-            <input type="radio" name="trip_status" value="end"> <span>Trip End</span>
+            <input type="radio" name="trip_phase" value="end"> <span>Trip End</span>
           </label>
         </div>
       </center>
@@ -344,7 +344,7 @@
       const signatureData = ctx.getImageData(0, 0, signatureCanvas.width, signatureCanvas.height).data;
 
       // ✅ Check if a trip_status radio is selected
-      const tripStatusSelected = document.querySelector('input[name="trip_status"]:checked');
+      const tripStatusSelected = document.querySelector('input[name="trip_phase"]:checked');
       if (!tripStatusSelected) {
         alert("Please select Trip Start or Trip End.");
         return false;
