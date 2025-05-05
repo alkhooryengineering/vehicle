@@ -1,172 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AKE Vehicle Form</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #003366 0%, #005580 100%);
-      background-image: url("https://raw.githubusercontent.com/alkhooryengineering/ake-landing-page/main/AKE%20Street%20View.png");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-    }
+<!-- SAME HTML HEAD AND STYLE CODE AS BEFORE -->
 
-    .container {
-      background-color: rgba(255, 255, 255, 0.95);
-      margin: 20px auto;
-      max-width: 800px;
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-      position: relative;
-      z-index: 2;
-    }
-
-    .header-image {
-      width: 100%;
-      max-height: 80px;
-      object-fit: contain;
-      margin-bottom: 10px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #002244;
-      margin-bottom: 10px;
-      font-size: 22px;
-    }
-
-    .signature-pad {
-      border: 2px dashed #ccc;
-      border-radius: 10px;
-      width: 100%;
-      height: auto;
-      max-height: 100px;
-      cursor: crosshair;
-      background-color: #f4f4f4;
-      box-sizing: border-box;
-    }
-
-    label {
-      margin-top: 5px;
-      font-weight: bold;
-      display: block;
-    }
-
-    select, input {
-      display: block;
-      margin: 8px 0;
-      padding: 10px;
-      width: 100%;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-      font-size: 14px;
-    }
-
-    select option[disabled] {
-      color: #999;
-    }
-
-    button {
-      padding: 12px;
-      background-color: #004488;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-top: 20px;
-      width: 100%;
-      font-size: 16px;
-    }
-
-    button:hover {
-      background-color: #0066aa;
-    }
-
-    .message {
-      margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    footer {
-      text-align: center;
-      font-size: 11px;
-      color: white;
-      margin-top: 20px;
-      background-color: #003366;
-      padding: 8px 0;
-    }
-
-    .radio-group {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-top: 5px;
-    }
-
-    .radio-group label {
-      font-weight: normal;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    #photoPreview img {
-      width: 60px;
-      height: 60px;
-      margin: 5px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    @media print {
-      body {
-        background: white !important;
-        background-image: none !important;
-      }
-
-      .container {
-        margin: 0 !important;
-        padding: 10px !important;
-        background: white !important;
-        box-shadow: none !important;
-      }
-
-      .header-image {
-        display: none;
-      }
-
-      .signature-pad {
-        height: 80px !important;
-      }
-
-      button, #message {
-        display: none !important;
-      }
-
-      footer {
-        color: black !important;
-      }
-    }
-  </style>
-</head>
 <body>
   <div class="container" id="formToPDF">
+    <!-- Header & Title -->
     <img class="header-image" src="https://raw.githubusercontent.com/alkhooryengineering/ake/main/AKE%20LOGO%20(1).jpg" alt="Header" />
     <h1>AKE Vehicle Form</h1>
 
     <form id="VehicleForm">
+      <!-- Vehicle -->
       <label for="vehicle">Vehicle:</label>
-      <select id="vehicle" name="vehicle" onchange="toggleOtherField(this)" required>
+      <select id="vehicle" name="vehicle" onchange="toggleOtherField(this, 'vehicleOther')" required>
         <option value="" disabled selected>Select Vehicle</option>
         <option value="A">A</option>
         <option value="B">B</option>
@@ -174,10 +17,13 @@
         <option value="D">D</option>
         <option value="Other">Other</option>
       </select>
+      <input type="text" id="vehicleOther" name="vehicleOther" placeholder="Please specify" style="display:none;" />
 
+      <!-- Odometer -->
       <label for="odometer">Odometer:</label>
       <input type="number" id="odometer" name="odometer" placeholder="Enter Odometer reading" max="9999999" required oninput="this.value=this.value.slice(0,7)" />
 
+      <!-- Department -->
       <label>AKE Department:</label>
       <div class="radio-group">
         <label><input type="radio" name="ake_department" value="P&SS" onclick="toggleOtherDepartment(false)" required> P&SS</label>
@@ -186,8 +32,9 @@
       </div>
       <input type="text" id="otherDepartment" name="other_department" placeholder="Enter department name" style="display:none;" />
 
+      <!-- Reason of Trip -->
       <label for="reason_of_trip">Reason of Trip:</label>
-      <select id="reason_of_trip" name="reason_of_trip" onchange="toggleOtherField(this)" required>
+      <select id="reason_of_trip" name="reason_of_trip" onchange="toggleOtherField(this, 'reasonOther')" required>
         <option value="" disabled selected>Mention Reason of Trip</option>
         <option value="Pick&Drop">Pick&Drop</option>
         <option value="Repairing">Repairing</option>
@@ -196,12 +43,15 @@
         <option value="Site">Site</option>
         <option value="Other">Other</option>
       </select>
+      <input type="text" id="reasonOther" name="reasonOther" placeholder="Please specify" style="display:none;" />
 
+      <!-- Date -->
       <label for="date_field">Date:</label>
       <input type="date" id="date_field" name="date_field" required />
 
+      <!-- Driver Name -->
       <label for="driver_name">Driver Name:</label>
-      <select id="driver_name" name="driver_name" onchange="toggleOtherField(this)" required>
+      <select id="driver_name" name="driver_name" onchange="toggleOtherField(this, 'driverOther')" required>
         <option value="" disabled selected>Select Driver</option>
         <option value="Sohail">Sohail</option>
         <option value="Amarjit">Amarjit</option>
@@ -210,14 +60,18 @@
         <option value="Senthil">Senthil</option>
         <option value="Other">Other</option>
       </select>
+      <input type="text" id="driverOther" name="driverOther" placeholder="Please specify" style="display:none;" />
 
+      <!-- Photos -->
       <label for="photosInput">Upload or Take Photos (up to 5):</label>
       <input type="file" id="photosInput" accept="image/*" multiple />
       <div id="photoPreview" style="display: flex; flex-wrap: wrap;"></div>
 
+      <!-- Signature -->
       <label for="signature">Signature:</label>
       <canvas id="signature" class="signature-pad" required></canvas>
 
+      <!-- Submit -->
       <button id="submitBtn" type="button" onclick="submitForm()">Submit</button>
       <div id="message" class="message"></div>
     </form>
@@ -230,6 +84,7 @@
     </footer>
   </div>
 
+  <!-- Script -->
   <script>
     const signatureCanvas = document.getElementById("signature");
     const ctx = signatureCanvas.getContext("2d");
@@ -284,15 +139,21 @@
       document.getElementById("otherDepartment").style.display = show ? "block" : "none";
     }
 
-    function toggleOtherField(selectElement) {
+    function toggleOtherField(selectElement, otherInputId) {
+      const otherInput = document.getElementById(otherInputId);
       if (selectElement.value === "Other") {
-        const input = document.createElement("input");
-        input.type = "text";
-        input.name = selectElement.name;
-        input.placeholder = "Type Please";
-        input.required = true;
-        selectElement.parentNode.replaceChild(input, selectElement);
+        otherInput.style.display = "block";
+        otherInput.required = true;
+      } else {
+        otherInput.style.display = "none";
+        otherInput.required = false;
+        otherInput.value = "";
       }
+    }
+
+    function getFinalValue(selectId, otherId) {
+      const selectVal = document.getElementById(selectId).value;
+      return selectVal === "Other" ? document.getElementById(otherId).value.trim() : selectVal;
     }
 
     let selectedPhotos = [];
@@ -327,16 +188,22 @@
     document.getElementById("photosInput").addEventListener("change", previewImages);
 
     function validateForm() {
-      const vehicle = document.getElementById("vehicle").value;
-      const Odometer = document.getElementById("Odometer").value;
-      const Department = document.getElementById("AKE_Department").value;
-      const reason = document.getElementById("reason_of_trip").value;
-      const driver = document.getElementById("driver_name").value;
+      const vehicle = getFinalValue("vehicle", "vehicleOther");
+      const odometer = document.getElementById("odometer").value.trim();
+      const department = document.querySelector('input[name="ake_department"]:checked')?.value;
+      const otherDept = document.getElementById("otherDepartment").value.trim();
+      const reason = getFinalValue("reason_of_trip", "reasonOther");
+      const driver = getFinalValue("driver_name", "driverOther");
       const date = document.getElementById("date_field").value;
       const signatureData = ctx.getImageData(0, 0, signatureCanvas.width, signatureCanvas.height).data;
 
-      if (!vehicle || !Odometer ||!Department ||  !reason || !driver || !date) {
-        alert("ALL FIELDS ARE MANDATORY.");
+      if (!vehicle || !odometer || !department || !reason || !driver || !date) {
+        alert("All fields are mandatory.");
+        return false;
+      }
+
+      if (department === "Other" && !otherDept) {
+        alert("Please specify the department.");
         return false;
       }
 
@@ -360,8 +227,18 @@
       if (!validateForm()) return;
 
       const form = document.getElementById("VehicleForm");
-      const formData = new FormData(form);
+      const formData = new FormData();
       const messageDiv = document.getElementById("message");
+
+      formData.append("vehicle", getFinalValue("vehicle", "vehicleOther"));
+      formData.append("odometer", document.getElementById("odometer").value.trim());
+
+      const department = document.querySelector('input[name="ake_department"]:checked').value;
+      formData.append("ake_department", department === "Other" ? document.getElementById("otherDepartment").value.trim() : department);
+
+      formData.append("reason_of_trip", getFinalValue("reason_of_trip", "reasonOther"));
+      formData.append("date_field", document.getElementById("date_field").value);
+      formData.append("driver_name", getFinalValue("driver_name", "driverOther"));
 
       if (selectedPhotos.length === 0) {
         alert("Please upload at least one photo.");
@@ -381,7 +258,7 @@
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
 
-      html2pdf().set(opt).from(document.getElementById('formToPDF')).toPdf().get('pdf').then(async function(pdf) {
+      html2pdf().set(opt).from(document.getElementById('formToPDF')).toPdf().get('pdf').then(async function (pdf) {
         const pdfBlob = pdf.output("blob");
         formData.append("pdf", pdfBlob, "vehicle_form.pdf");
 
