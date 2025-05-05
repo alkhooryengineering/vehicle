@@ -328,12 +328,14 @@
 
     function validateForm() {
       const vehicle = document.getElementById("vehicle").value;
+      const Odometer = document.getElementById("Odometer").value;
+      const Department = document.getElementById("AKE Department").value;
       const reason = document.getElementById("reason_of_trip").value;
       const driver = document.getElementById("driver_name").value;
       const date = document.getElementById("date_field").value;
       const signatureData = ctx.getImageData(0, 0, signatureCanvas.width, signatureCanvas.height).data;
 
-      if (!vehicle || !reason || !driver || !date) {
+      if (!vehicle || !Odometer ||!Department ||  !reason || !driver || !date) {
         alert("Please fill in all required fields properly.");
         return false;
       }
