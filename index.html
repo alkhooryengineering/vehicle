@@ -7,6 +7,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
   <style>
+    /* [Same CSS as your original] */
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -69,10 +70,6 @@
       border: 1px solid #ccc;
       box-sizing: border-box;
       font-size: 14px;
-    }
-
-    select option[disabled] {
-      color: #999;
     }
 
     button {
@@ -141,16 +138,12 @@
         box-shadow: none !important;
       }
 
-      .header-image {
-        display: none;
+      .header-image, button, #message {
+        display: none !important;
       }
 
       .signature-pad {
         height: 80px !important;
-      }
-
-      button, #message {
-        display: none !important;
       }
 
       footer {
@@ -174,6 +167,7 @@
         <option value="D">D</option>
         <option value="Other">Other</option>
       </select>
+      <input type="text" id="vehicleOther" name="vehicle_other" placeholder="Type Vehicle" style="display:none;" />
 
       <label for="odometer">Odometer:</label>
       <input type="number" id="odometer" name="odometer" placeholder="Enter Odometer reading" max="9999999" required oninput="this.value=this.value.slice(0,7)" />
@@ -196,6 +190,7 @@
         <option value="Site">Site</option>
         <option value="Other">Other</option>
       </select>
+      <input type="text" id="reason_of_tripOther" name="reason_of_trip_other" placeholder="Type Reason" style="display:none;" />
 
       <label for="date_field">Date:</label>
       <input type="date" id="date_field" name="date_field" required />
@@ -210,6 +205,7 @@
         <option value="Senthil">Senthil</option>
         <option value="Other">Other</option>
       </select>
+      <input type="text" id="driver_nameOther" name="driver_name_other" placeholder="Type Driver Name" style="display:none;" />
 
       <label for="photosInput">Upload or Take Photos (up to 5):</label>
       <input type="file" id="photosInput" accept="image/*" multiple />
@@ -287,24 +283,14 @@
     function toggleOtherField(selectElement) {
       const selectedValue = selectElement.value;
       const name = selectElement.name;
-      const existingInput = document.getElementById(name + "Other");
+      const otherInput = document.getElementById(name + "Other");
 
       if (selectedValue === "Other") {
-        if (!existingInput) {
-          const input = document.createElement("input");
-          input.type = "text";
-          input.name = name;
-          input.id = name + "Other";
-          input.placeholder = "Type Please";
-          input.required = true;
-          selectElement.parentNode.appendChild(input);
-        }
-        selectElement.required = false;
-        selectElement.style.display = "none";
+        otherInput.style.display = "block";
+        otherInput.required = true;
       } else {
-        if (existingInput) existingInput.remove();
-        selectElement.required = true;
-        selectElement.style.display = "block";
+        otherInput.style.display = "none";
+        otherInput.required = false;
       }
     }
 
@@ -340,15 +326,7 @@
     document.getElementById("photosInput").addEventListener("change", previewImages);
 
     function validateForm() {
-      const date = document.getElementById("date_field").value;
-      const odometer = document.getElementById("odometer").value;
       const signatureData = ctx.getImageData(0, 0, signatureCanvas.width, signatureCanvas.height).data;
-
-      if (!date || !odometer) {
-        alert("All fields are mandatory.");
-        return false;
-      }
-
       let isSigned = false;
       for (let i = 0; i < signatureData.length; i += 4) {
         if (signatureData[i + 3] !== 0) {
@@ -356,12 +334,10 @@
           break;
         }
       }
-
       if (!isSigned) {
         alert("Please provide a signature.");
         return false;
       }
-
       return true;
     }
 
