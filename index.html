@@ -166,10 +166,14 @@
 
     <form id="VehicleForm">
      
-      <div class="radio-group">
-        <label><input type="radio" name="Trip Phase" value="Start" onclick="toggleOtherDepartment(false)" required> Trip Start</label>
-        <label><input type="radio" name="Trip Phase" value="End" onclick="toggleOtherDepartment(false)" required> Trip End</label>
-      </div>
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 14px;">
+  <label>
+    <input type="radio" name="trip_status" value="start"> Trip Start
+  </label>
+  <label>
+    <input type="radio" name="trip_status" value="end"> Trip End
+  </label>
+</div>
       
       <label for="vehicle">Vehicle:</label>
       <select id="vehicle" name="vehicle" onchange="toggleOtherField(this)" required>
