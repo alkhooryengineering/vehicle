@@ -285,13 +285,26 @@
     }
 
     function toggleOtherField(selectElement) {
-      if (selectElement.value === "Other") {
-        const input = document.createElement("input");
-        input.type = "text";
-        input.name = selectElement.name;
-        input.placeholder = "Type Please";
-        input.required = true;
-        selectElement.parentNode.replaceChild(input, selectElement);
+      const selectedValue = selectElement.value;
+      const name = selectElement.name;
+      const existingInput = document.getElementById(name + "Other");
+
+      if (selectedValue === "Other") {
+        if (!existingInput) {
+          const input = document.createElement("input");
+          input.type = "text";
+          input.name = name;
+          input.id = name + "Other";
+          input.placeholder = "Type Please";
+          input.required = true;
+          selectElement.parentNode.appendChild(input);
+        }
+        selectElement.required = false;
+        selectElement.style.display = "none";
+      } else {
+        if (existingInput) existingInput.remove();
+        selectElement.required = true;
+        selectElement.style.display = "block";
       }
     }
 
@@ -327,16 +340,12 @@
     document.getElementById("photosInput").addEventListener("change", previewImages);
 
     function validateForm() {
-      const vehicle = document.getElementById("vehicle").value;
-      const Odometer = document.getElementById("Odometer").value;
-      const Department = document.getElementById("AKE_Department").value;
-      const reason = document.getElementById("reason_of_trip").value;
-      const driver = document.getElementById("driver_name").value;
       const date = document.getElementById("date_field").value;
+      const odometer = document.getElementById("odometer").value;
       const signatureData = ctx.getImageData(0, 0, signatureCanvas.width, signatureCanvas.height).data;
 
-      if (!vehicle || !Odometer ||!Department ||  !reason || !driver || !date) {
-        alert("ALL FIELDS ARE MANDATORY.");
+      if (!date || !odometer) {
+        alert("All fields are mandatory.");
         return false;
       }
 
