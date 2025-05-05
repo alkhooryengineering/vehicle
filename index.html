@@ -165,18 +165,17 @@
     <h1>AKE Vehicle Form</h1>
 
     <form id="VehicleForm">
-     
       <center>
-<div style="display: inline-flex; align-items: center; gap: 20px; white-space: nowrap;">
-  <label style="display: inline-flex; align-items: center; gap: 5px;">
-    <input type="radio" name="trip_status" value="start" required> <span>Trip Start</span>
-  </label>
-  <label style="display: inline-flex; align-items: center; gap: 5px;">
-    <input type="radio" name="trip_status" value="end"> <span>Trip End</span>
-  </label>
-</div>
-     </center>
-      
+        <div style="display: inline-flex; align-items: center; gap: 20px; white-space: nowrap;">
+          <label style="display: inline-flex; align-items: center; gap: 5px;">
+            <input type="radio" name="trip_status" value="start"> <span>Trip Start</span>
+          </label>
+          <label style="display: inline-flex; align-items: center; gap: 5px;">
+            <input type="radio" name="trip_status" value="end"> <span>Trip End</span>
+          </label>
+        </div>
+      </center>
+
       <label for="vehicle">Vehicle:</label>
       <select id="vehicle" name="vehicle" onchange="toggleOtherField(this)" required>
         <option value="" disabled selected>Select Vehicle</option>
@@ -344,6 +343,13 @@
       const formElements = document.getElementById("VehicleForm").elements;
       const signatureData = ctx.getImageData(0, 0, signatureCanvas.width, signatureCanvas.height).data;
 
+      // ✅ Check if a trip_status radio is selected
+      const tripStatusSelected = document.querySelector('input[name="trip_status"]:checked');
+      if (!tripStatusSelected) {
+        alert("Please select Trip Start or Trip End.");
+        return false;
+      }
+
       for (let el of formElements) {
         if (el.hasAttribute("required") && !el.value) {
           alert("ALL FIELDS ARE MANDATORY.");
@@ -373,12 +379,12 @@
       const form = document.getElementById("VehicleForm");
       const formData = new FormData(form);
 
-// Replace AKE Department "Other" with actual input value
-const selectedDept = form.querySelector('input[name="ake_department"]:checked');
-if (selectedDept && selectedDept.value === "Other") {
-  const otherDeptInput = document.getElementById("otherDepartment");
-  formData.set("ake_department", otherDeptInput.value);
-}
+      const selectedDept = form.querySelector('input[name="ake_department"]:checked');
+      if (selectedDept && selectedDept.value === "Other") {
+        const otherDeptInput = document.getElementById("otherDepartment");
+        formData.set("ake_department", otherDeptInput.value);
+      }
+
       const messageDiv = document.getElementById("message");
 
       if (selectedPhotos.length === 0) {
