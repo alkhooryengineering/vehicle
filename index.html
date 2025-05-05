@@ -360,6 +360,13 @@
 
       const form = document.getElementById("VehicleForm");
       const formData = new FormData(form);
+
+// Replace AKE Department "Other" with actual input value
+const selectedDept = form.querySelector('input[name="ake_department"]:checked');
+if (selectedDept && selectedDept.value === "Other") {
+  const otherDeptInput = document.getElementById("otherDepartment");
+  formData.set("ake_department", otherDeptInput.value);
+}
       const messageDiv = document.getElementById("message");
 
       if (selectedPhotos.length === 0) {
