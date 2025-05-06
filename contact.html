@@ -17,28 +17,46 @@
       background-attachment: fixed;
       color: #fff;
       display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    .container {
-      display: flex;
-      flex: 1;
       justify-content: flex-end;
+      align-items: center;
+      min-height: 100vh;
       padding: 40px;
     }
 
     .form-container {
-      background-color: rgba(255, 255, 255, 0.9);
-      width: 100%;
+      background-color: rgba(255, 255, 255, 0.95);
       max-width: 500px;
-      padding: 35px;
+      width: 100%;
       border-radius: 16px;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
       color: #222;
+      display: flex;
+      flex-direction: column;
+      animation: slideInRight 0.8s ease-out forwards;
     }
 
-    .form-container h2 {
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .form-header img {
+      width: 100%;
+      border-radius: 16px 16px 0 0;
+      display: block;
+    }
+
+    .form-content {
+      padding: 30px;
+    }
+
+    .form-content h2 {
       text-align: center;
       color: #004080;
       font-weight: 600;
@@ -89,29 +107,22 @@
       background-color: #005fa3;
     }
 
-    header img {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 0 0 10px 10px;
-    }
-
-    footer {
-      background-color: rgba(0, 64, 128, 0.85);
-      padding: 20px;
+    .form-footer {
+      background-color: #004080;
+      border-radius: 0 0 16px 16px;
+      padding: 15px 20px;
       text-align: center;
-      font-size: 14px;
+      font-size: 13px;
       color: #fff;
     }
 
-    footer p {
-      margin: 5px 0;
+    .form-footer p {
+      margin: 6px 0;
     }
 
     @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        align-items: center;
+      body {
+        justify-content: center;
         padding: 20px;
       }
     }
@@ -119,12 +130,12 @@
 </head>
 <body>
 
-  <header>
-    <img src="https://raw.githubusercontent.com/alkhooryengineering/ake/main/AKE%20LOGO%20(1).jpg" alt="Header" />
-  </header>
+  <div class="form-container">
+    <div class="form-header">
+      <img src="https://raw.githubusercontent.com/alkhooryengineering/ake/main/AKE%20LOGO%20(1).jpg" alt="Header" />
+    </div>
 
-  <div class="container">
-    <div class="form-container">
+    <div class="form-content">
       <h2>Contact Us</h2>
       <form id="contactForm">
         <div class="form-group">
@@ -150,12 +161,13 @@
         <button type="submit" class="submit-btn">Send Message</button>
       </form>
     </div>
-  </div>
 
-  <footer>
-    <p>P.O. Box:41, Dubai, UAE  Tel: +971 4 333 1317, Email: mahykeng@emirates.net.ae</p>
-    <p>ISO 9001, 45001, 14001 CERTIFIED</p>
-  </footer>
+    <div class="form-footer">
+      <p>P.O. Box:41, Dubai, UAE  Tel: +971 4 333 1317</p>
+      <p>Email: mahykeng@emirates.net.ae</p>
+      <p>ISO 9001, 45001, 14001 CERTIFIED</p>
+    </div>
+  </div>
 
 </body>
 </html>
