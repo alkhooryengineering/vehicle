@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Contact Us</title>
+  <title>Send your query</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
   <style>
@@ -16,6 +16,10 @@
       background-position: center;
       background-repeat: no-repeat;
       background-attachment: fixed;
+      display: flex;
+      justify-content: flex-end;
+      height: 100vh;
+      align-items: center;
     }
 
     .container {
@@ -28,6 +32,7 @@
       position: relative;
       z-index: 2;
       overflow: hidden;
+      width: 100%;
     }
 
     .header-image {
@@ -166,7 +171,7 @@
       <input type="text" id="Company Name" name="Company Name" placeholder="Enter Your Company Name" required>
 
       <label for="contact">Contact Number:</label>
-      <input type="tel" id="contact" name="contact" placeholder="Enter Your Contact Number" pattern="\d*" maxlength="16" required oninput="validateContactNumber()">
+      <input type="text" id="contact" name="contact" placeholder="Enter Your Contact Number" maxlength="16" required oninput="validateContactNumber(event)">
 
       <label for="query">Query:</label>
       <input type="text" id="query" name="query" placeholder="Enter your query or message" maxlength="1000" required>
@@ -266,9 +271,12 @@
     }
 
     // Validate contact number for only numeric values
-    function validateContactNumber() {
-      const contactInput = document.getElementById("contact");
+    function validateContactNumber(event) {
+      const contactInput = event.target;
       const contactValue = contactInput.value;
+
+      // Allow only numbers
+      contactInput.value = contactValue.replace(/[^0-9]/g, "");
 
       if (/[^0-9]/.test(contactValue)) {
         contactInput.setCustomValidity("Please enter a valid phone number.");
