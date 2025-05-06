@@ -43,17 +43,6 @@
       font-size: 22px;
     }
 
-    .signature-pad {
-      border: 2px dashed #ccc;
-      border-radius: 10px;
-      width: 100%;
-      height: auto;
-      max-height: 150px;
-      cursor: crosshair;
-      background-color: #f4f4f4;
-      box-sizing: border-box;
-    }
-
     label {
       margin-top: 10px;
       font-weight: bold;
@@ -71,11 +60,6 @@
       font-size: 14px;
     }
 
-     select option[disabled] {
-      color: #999;
-    }
-
-    
     button {
       padding: 12px;
       background-color: #004488;
@@ -107,26 +91,33 @@
       padding: 8px 0;
     }
 
-    .radio-group {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-top: 5px;
-    }
-
-    .radio-group label {
-      font-weight: normal;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
     #photoPreview img {
       width: 40px;
       height: 40px;
       margin: 5px;
       object-fit: cover;
       border-radius: 8px;
+    }
+
+    #passwordOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    #passwordOverlay input {
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
     }
 
     @media print {
@@ -146,10 +137,6 @@
         display: none;
       }
 
-      .signature-pad {
-        height: 80px !important;
-      }
-
       button, #message {
         display: none !important;
       }
@@ -162,173 +149,129 @@
 </head>
 <body>
 
+<div id="passwordOverlay">
+  <input type="password" id="passwordInput" placeholder="Enter Password" />
+  <button onclick="checkPassword()">Submit</button>
+  <div id="passwordMessage"></div>
+</div>
 
+<div class="container" id="formToPDF" style="display: none;">
+  <img class="header-image" src="https://raw.githubusercontent.com/alkhooryengineering/ake/main/AKE%20LOGO%20(1).jpg" alt="Header" />
+  <h1>Contact Us</h1>
 
- 
-  <div class="container" id="formToPDF">
-    <img class="header-image" src="https://raw.githubusercontent.com/alkhooryengineering/ake/main/AKE%20LOGO%20(1).jpg" alt="Header" />
-    <h1>Contact Us</h1>
+  <form id="orderForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" placeholder="Enter Your Name" required>
 
-    <form id="orderForm">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" placeholder="Enter Your Email" required>
 
-      <!-- Name Input -->
-<label for="name">Name:</label>
-<input type="text" id="name" name="name" placeholder="Enter Your Name" required>
+    <label for="company_name">Company Name:</label>
+    <input type="text" id="company_name" name="company_name" placeholder="Enter Your Company Name" required>
 
-       <!-- email -->
-<label for="email">Email:</label>
-<input type="text" id="email" name="email" placeholder="Enter Your Email" required>
+    <label for="contact">Contact Number:</label>
+    <input type="text" id="contact" name="contact" placeholder="Enter Your Contact Number" required>
 
-       <!-- Company Name -->
-<label for="Company Name">Company Name:</label>
-<input type="text" id="Company Name" name="Company Name" placeholder="Enter Your Company Name" required>
-      
-    <!-- Contact Number -->
-<label for="contact">Contact Number:</label>
-<input type="text" id="contact" name="contact" placeholder="Enter Your Contact Number" required>
+    <label for="photosInput">Upload or Take Photos of material:</label>
+    <input type="file" id="photosInput" accept="image/*" multiple />
+    <div id="photoPreview" style="display: flex; flex-wrap: wrap;"></div>
 
+    <button id="submitBtn" type="button" onclick="submitForm()">Submit</button>
+    <div id="message" class="message"></div>
+  </form>
 
-      <!-- Uploads -->
-      <label for="photosInput">Upload or Take Photos (up to 5):</label>
-      <input type="file" id="photosInput" accept="image/*" multiple />
-      <div id="photoPreview" style="display: flex; flex-wrap: wrap;"></div>
+  <footer>
+    <p>P.O. Box:41, Dubai, UAE  Tel: +971 4 333 1317, Email: mahykeng@emirates.net.ae</p>
+    <p>ISO 9001, 45001, 14001 CERTIFIED</p>
+  </footer>
+</div>
 
+<script>
+  function validateForm() {
+    const form = document.getElementById("orderForm");
+    if (!form.name.value || !form.email.value || !form.company_name.value || !form.contact.value) {
+      alert("Please fill in all the required fields.");
+      return false;
+    }
+    return true;
+  }
 
-      <!-- Submit -->
-      <button id="submitBtn" type="button" onclick="submitForm()">Submit</button>
-      <div id="message" class="message"></div>
-    </form>
+  let selectedPhotos = [];
 
-    <footer>
-      <p>P.O. Box:41, Dubai, UAE  Tel: +971 4 333 1317, Email: mahykeng@emirates.net.ae</p>
-      <p>ISO 9001, 45001, 14001 CERTIFIED</p>
-    </footer>
-  </div>
+  document.getElementById("photosInput").addEventListener("change", function (e) {
+    const files = Array.from(e.target.files);
+    if (selectedPhotos.length + files.length > 3) {
+      alert("You can upload a maximum of 3 photos.");
+      return;
+    }
+    selectedPhotos = selectedPhotos.concat(files);
+    showPreviews();
+  });
 
-  <script>
-    
+  function showPreviews() {
+    const previewContainer = document.getElementById("photoPreview");
+    previewContainer.innerHTML = '';
+    selectedPhotos.forEach(file => {
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file);
+      previewContainer.appendChild(img);
+    });
+  }
 
-    function toggleOtherDepartment(show) {
-      document.getElementById("otherDepartment").style.display = show ? "block" : "none";
+  async function submitForm() {
+    if (!validateForm()) return;
+
+    if (selectedPhotos.length === 0) {
+      alert("Please upload at least one photo.");
+      return;
     }
 
-    function toggleOtherField(selectElement) {
-      if (selectElement.value === "Other") {
-        const input = document.createElement("input");
-        input.type = "text";
-        input.name = selectElement.name;
-        input.placeholder = "Type Please";
-        input.required = true;
-        input.className = selectElement.className;
-        input.value = '';
-        selectElement.parentNode.replaceChild(input, selectElement);
-      }
-    }
+    const form = document.getElementById("orderForm");
+    const formData = new FormData(form);
 
-    function validateForm() {
-      const form = document.getElementById("orderForm");
-      const signature = document.getElementById("signature");
-
-      if (!form.company.value || !form.akeDepartment.value || !form.material.value || !form.Quantity.value || !form.dateField.value) {
-        alert("Please fill in all the required fields.");
-        return false;
-      }
-
-      if (signature.width === 0 || signature.height === 0) {
-        alert("Please provide a signature.");
-        return false;
-      }
-
-      return true;
-    }
-
-    let selectedPhotos = [];
-
-    document.getElementById("photosInput").addEventListener("change", function (e) {
-      const files = Array.from(e.target.files);
-      if (selectedPhotos.length + files.length > 5) {
-        alert("You can upload a maximum of 5 photos.");
-        e.target.value = '';
-        return;
-      }
-
-      selectedPhotos = selectedPhotos.concat(files);
-      showPreviews();
-      e.target.value = '';
+    selectedPhotos.forEach((photo, index) => {
+      formData.append("photo" + index, photo);
     });
 
-    function showPreviews() {
-      const previewContainer = document.getElementById("photoPreview");
-      previewContainer.innerHTML = '';
-      selectedPhotos.forEach(file => {
-        const img = document.createElement("img");
-        img.src = URL.createObjectURL(file);
-        previewContainer.appendChild(img);
-      });
-    }
+    const opt = {
+      margin: 0,
+      filename: 'order_form.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    };
 
-    async function submitForm() {
-      if (!validateForm()) return;
+    html2pdf().set(opt).from(document.getElementById('formToPDF')).toPdf().get('pdf').then(async function(pdf) {
+      const pdfBlob = pdf.output("blob");
+      formData.append("pdf", pdfBlob, "order_form.pdf");
 
-      const form = document.getElementById("orderForm");
-      const formData = new FormData(form);
+      const messageDiv = document.getElementById("message");
+      try {
+        const response = await fetch("https://ake-form-backend.onrender.com/send-pdf", {
+          method: "POST",
+          body: formData
+        });
 
-      if (selectedPhotos.length === 0) {
-        alert("Please upload at least one photo.");
-        return;
-      }
-
-      selectedPhotos.forEach((photo, index) => {
-        formData.append("photo" + index, photo);
-      });
-
-      const opt = {
-        margin: 0,
-        filename: 'order_form.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-      };
-
-      html2pdf().set(opt).from(document.getElementById('formToPDF')).toPdf().get('pdf').then(async function(pdf) {
-        const pdfBlob = pdf.output("blob");
-        formData.append("pdf", pdfBlob, "order_form.pdf");
-
-        const messageDiv = document.getElementById("message");
-        try {
-          const response = await fetch("https://ake-form-backend.onrender.com/send-pdf", {
-            method: "POST",
-            body: formData
-          });
-
-          if (response.ok) {
-            messageDiv.textContent = "✅ Email Delivered";
-            messageDiv.style.color = "green";
-            document.getElementById("submitBtn").style.display = "none";
-          } else {
-            messageDiv.textContent = "❌ Submission failed. Please try again.";
-            messageDiv.style.color = "red";
-          }
-        } catch (error) {
-          console.error("Error during submission:", error);
+        if (response.ok) {
+          messageDiv.textContent = "✅ Email Delivered";
+          messageDiv.style.color = "green";
+          document.getElementById("submitBtn").style.display = "none";
+        } else {
           messageDiv.textContent = "❌ Submission failed. Please try again.";
           messageDiv.style.color = "red";
         }
-      });
-    }
-  </script>
+      } catch (error) {
+        console.error("Error during submission:", error);
+        messageDiv.textContent = "❌ Submission failed. Please try again.";
+        messageDiv.style.color = "red";
+      }
+    });
+  }
 
-
-
-
-
-
-
-  <script>
   const correctPassword = "ake#123";
   const maxAttempts = 3;
-  const blockDuration = 5 * 60 * 1000; // 5 minutes
+  const blockDuration = 5 * 60 * 1000;
 
   const overlay = document.getElementById("passwordOverlay");
   const message = document.getElementById("passwordMessage");
@@ -347,6 +290,7 @@
       localStorage.removeItem("passwordAttempts");
       localStorage.removeItem("lockUntil");
       overlay.style.display = "none";
+      document.getElementById("formToPDF").style.display = "block";
     } else {
       const newAttempts = attempts + 1;
       localStorage.setItem("passwordAttempts", newAttempts);
@@ -361,12 +305,12 @@
 
   window.onload = () => {
     const lockUntil = parseInt(localStorage.getItem("lockUntil") || "0");
-    if (Date.now() < lockUntil) {
-      message.textContent = "Too many attempts. Try again later.";
+    if (Date.now() >= lockUntil) {
+      document.getElementById("formToPDF").style.display = "block";
+      overlay.style.display = "none";
     }
   };
 </script>
 
-  
 </body>
 </html>
