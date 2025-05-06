@@ -16,16 +16,22 @@
       background-position: center;
       background-repeat: no-repeat;
       background-attachment: fixed;
+
+      /* New Flexbox Layout */
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     .container {
       background-color: rgba(255, 255, 255, 0.95);
-      margin: 20px auto;
-      max-width: 800px;
+      max-width: 600px;
       padding: 20px;
       border-radius: 20px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-      position: relative;
       z-index: 2;
     }
 
@@ -49,7 +55,7 @@
       display: block;
     }
 
-    select, input {
+    select, input, textarea {
       display: block;
       margin: 8px 0;
       padding: 10px;
@@ -58,6 +64,11 @@
       border: 1px solid #ccc;
       box-sizing: border-box;
       font-size: 14px;
+    }
+
+    textarea {
+      height: 120px;
+      resize: vertical;
     }
 
     select option[disabled] {
@@ -107,6 +118,8 @@
       body {
         background: white !important;
         background-image: none !important;
+        display: block;
+        padding: 0;
       }
 
       .container {
@@ -136,32 +149,25 @@
     <h1>Contact Us</h1>
 
     <form id="orderForm">
-      <!-- Name -->
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" placeholder="Enter Your Name" required>
 
-      <!-- Email -->
       <label for="email">Email:</label>
       <input type="email" id="email" name="email" placeholder="Enter Your Email" required>
 
-      <!-- Company Name -->
       <label for="Company Name">Company Name:</label>
       <input type="text" id="Company Name" name="Company Name" placeholder="Enter Your Company Name" required>
 
-      <!-- Contact Number -->
       <label for="contact">Contact Number:</label>
       <input type="tel" id="contact" name="contact" placeholder="Enter Your Contact Number" pattern="\d*" maxlength="16" required>
 
-      <!-- Query -->
       <label for="query">Query:</label>
-      <input type="text" id="query" name="query" placeholder="Enter your query or message" maxlength="1000" required>
+      <textarea id="query" name="query" placeholder="Enter your query or message" maxlength="1000" required></textarea>
 
-      <!-- Uploads -->
       <label for="photosInput">Upload or Take Photos of material:</label>
       <input type="file" id="photosInput" accept="image/*" multiple />
       <div id="photoPreview" style="display: flex; flex-wrap: wrap;"></div>
 
-      <!-- Submit -->
       <button id="submitBtn" type="button" onclick="submitForm()">Submit</button>
       <div id="message" class="message"></div>
     </form>
