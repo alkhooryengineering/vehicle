@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #e6f0ff;
+      color: #333;
+    }
+
+    header img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h2 {
+      text-align: center;
+      color: #004080;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      height: 120px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background-color: #0074D9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #005fa3;
+    }
+
+    footer {
+      background-color: #004080;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    footer p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="header-photo.jpg" alt="Company Header Image" />
+  </header>
+
+  <div class="form-container">
+    <h2>Contact Us</h2>
+    <form id="contactForm">
+      <div class="form-group">
+        <label for="name">Name*</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+
+      <div class="form-group">
+        <label for="company">Company Name</label>
+        <input type="text" id="company" name="company" />
+      </div>
+
+      <div class="form-group">
+        <label for="contact">Contact Number*</label>
+        <input type="text" id="contact" name="contact" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address*</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message*</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn">Send Message</button>
+    </form>
+  </div>
+
+  <footer>
+    <section class="footer-contact">
+      <p>P.O. Box:41, Dubai, UAE  Tel: +971 4 333 1317, Email: mahykeng@emirates.net.ae</p>
+      <p>ISO 9001, 45001, 14001 CERTIFIED</p>
+    </section>
+  </footer>
+
+</body>
+</html>
