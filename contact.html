@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Contact Us</title>
   <style>
-
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,32 +14,27 @@
       background-position: center;
       background-repeat: no-repeat;
       background-attachment: fixed;
+      color: #fff;
     }
 
-
-
-
-    
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #e6f0ff;
-      color: #333;
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     header img {
       width: 100%;
       height: auto;
       display: block;
+      border-radius: 10px 10px 0 0;
     }
 
     .form-container {
-      max-width: 600px;
-      margin: 40px auto;
-      background-color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.85);
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      color: #333;
     }
 
     .form-container h2 {
@@ -91,62 +85,66 @@
     }
 
     footer {
-      background-color: #004080;
-      color: white;
+      background-color: rgba(0, 64, 128, 0.85);
       padding: 20px;
       text-align: center;
+      border-radius: 0 0 10px 10px;
+      margin-top: 20px;
     }
 
     footer p {
       margin: 5px 0;
       font-size: 14px;
+      color: #fff;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <img class="header-image" src="https://raw.githubusercontent.com/alkhooryengineering/ake/main/AKE%20LOGO%20(1).jpg" alt="Header" />
-  </header>
+  <div class="container">
+    <header>
+      <img class="header-image" src="https://raw.githubusercontent.com/alkhooryengineering/ake/main/AKE%20LOGO%20(1).jpg" alt="Header" />
+    </header>
 
-  <div class="form-container">
-    <h2>Contact Us</h2>
-    <form id="contactForm">
-      <div class="form-group">
-        <label for="name">Name*</label>
-        <input type="text" id="name" name="name" required />
-      </div>
+    <div class="form-container">
+      <h2>Contact Us</h2>
+      <form id="contactForm">
+        <div class="form-group">
+          <label for="name">Name*</label>
+          <input type="text" id="name" name="name" required />
+        </div>
 
-      <div class="form-group">
-        <label for="company">Company Name</label>
-        <input type="text" id="company" name="company" />
-      </div>
+        <div class="form-group">
+          <label for="company">Company Name</label>
+          <input type="text" id="company" name="company" />
+        </div>
 
-      <div class="form-group">
-        <label for="contact">Contact Number*</label>
-        <input type="text" id="contact" name="contact" required />
-      </div>
+        <div class="form-group">
+          <label for="contact">Contact Number*</label>
+          <input type="text" id="contact" name="contact" required />
+        </div>
 
-      <div class="form-group">
-        <label for="email">Email Address*</label>
-        <input type="email" id="email" name="email" required />
-      </div>
+        <div class="form-group">
+          <label for="email">Email Address*</label>
+          <input type="email" id="email" name="email" required />
+        </div>
 
-      <div class="form-group">
-        <label for="message">Message*</label>
-        <textarea id="message" name="message" required></textarea>
-      </div>
+        <div class="form-group">
+          <label for="message">Message*</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
 
-      <button type="submit" class="submit-btn">Send Message</button>
-    </form>
+        <button type="submit" class="submit-btn">Send Message</button>
+      </form>
+    </div>
+
+    <footer>
+      <section class="footer-contact">
+        <p>P.O. Box:41, Dubai, UAE  Tel: +971 4 333 1317, Email: mahykeng@emirates.net.ae</p>
+        <p>ISO 9001, 45001, 14001 CERTIFIED</p>
+      </section>
+    </footer>
   </div>
-
-  <footer>
-    <section class="footer-contact">
-      <p>P.O. Box:41, Dubai, UAE  Tel: +971 4 333 1317, Email: mahykeng@emirates.net.ae</p>
-      <p>ISO 9001, 45001, 14001 CERTIFIED</p>
-    </section>
-  </footer>
 
 </body>
 </html>
