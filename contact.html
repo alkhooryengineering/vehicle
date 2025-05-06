@@ -4,10 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Contact Us</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #003366 0%, #005580 100%);
       background-image: url("https://raw.githubusercontent.com/alkhooryengineering/vehicle/main/Contact.png");
       background-size: cover;
@@ -15,56 +16,60 @@
       background-repeat: no-repeat;
       background-attachment: fixed;
       color: #fff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     .container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    header img {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 10px 10px 0 0;
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      padding: 40px;
     }
 
     .form-container {
-      background-color: rgba(255, 255, 255, 0.85);
-      padding: 30px;
-      border-radius: 0 0 10px 10px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-      color: #333;
+      background-color: rgba(255, 255, 255, 0.9);
+      width: 100%;
+      max-width: 500px;
+      padding: 35px;
+      border-radius: 16px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+      color: #222;
     }
 
     .form-container h2 {
       text-align: center;
       color: #004080;
-      margin-bottom: 20px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      font-size: 26px;
     }
 
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 18px;
     }
 
     .form-group label {
       display: block;
       margin-bottom: 6px;
-      font-weight: 600;
+      font-weight: 500;
+      color: #333;
     }
 
     .form-group input,
     .form-group textarea {
       width: 100%;
-      padding: 12px;
+      padding: 12px 14px;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: 'Poppins', sans-serif;
     }
 
     .form-group textarea {
       resize: vertical;
-      height: 120px;
+      min-height: 100px;
     }
 
     .submit-btn {
@@ -73,9 +78,9 @@
       background-color: #0074D9;
       color: white;
       border: none;
-      border-radius: 6px;
-      font-size: 18px;
-      font-weight: bold;
+      border-radius: 8px;
+      font-size: 17px;
+      font-weight: 600;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
@@ -84,28 +89,41 @@
       background-color: #005fa3;
     }
 
+    header img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 0 0 10px 10px;
+    }
+
     footer {
       background-color: rgba(0, 64, 128, 0.85);
       padding: 20px;
       text-align: center;
-      border-radius: 0 0 10px 10px;
-      margin-top: 20px;
+      font-size: 14px;
+      color: #fff;
     }
 
     footer p {
       margin: 5px 0;
-      font-size: 14px;
-      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <header>
-      <img class="header-image" src="https://raw.githubusercontent.com/alkhooryengineering/ake/main/AKE%20LOGO%20(1).jpg" alt="Header" />
-    </header>
+  <header>
+    <img src="https://raw.githubusercontent.com/alkhooryengineering/ake/main/AKE%20LOGO%20(1).jpg" alt="Header" />
+  </header>
 
+  <div class="container">
     <div class="form-container">
       <h2>Contact Us</h2>
       <form id="contactForm">
@@ -113,38 +131,31 @@
           <label for="name">Name*</label>
           <input type="text" id="name" name="name" required />
         </div>
-
         <div class="form-group">
           <label for="company">Company Name</label>
           <input type="text" id="company" name="company" />
         </div>
-
         <div class="form-group">
           <label for="contact">Contact Number*</label>
           <input type="text" id="contact" name="contact" required />
         </div>
-
         <div class="form-group">
           <label for="email">Email Address*</label>
           <input type="email" id="email" name="email" required />
         </div>
-
         <div class="form-group">
           <label for="message">Message*</label>
           <textarea id="message" name="message" required></textarea>
         </div>
-
         <button type="submit" class="submit-btn">Send Message</button>
       </form>
     </div>
-
-    <footer>
-      <section class="footer-contact">
-        <p>P.O. Box:41, Dubai, UAE  Tel: +971 4 333 1317, Email: mahykeng@emirates.net.ae</p>
-        <p>ISO 9001, 45001, 14001 CERTIFIED</p>
-      </section>
-    </footer>
   </div>
+
+  <footer>
+    <p>P.O. Box:41, Dubai, UAE  Tel: +971 4 333 1317, Email: mahykeng@emirates.net.ae</p>
+    <p>ISO 9001, 45001, 14001 CERTIFIED</p>
+  </footer>
 
 </body>
 </html>
