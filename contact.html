@@ -207,7 +207,7 @@
  
   <div class="container" id="formToPDF">
     <img class="header-image" src="https://raw.githubusercontent.com/alkhooryengineering/ake/main/AKE%20LOGO%20(1).jpg" alt="Header" />
-    <h1>AKE Material In/Out Form</h1>
+    <h1>Contact Us</h1>
 
     <form id="orderForm">
 
@@ -215,52 +215,24 @@
 <label for="name">Name:</label>
 <input type="text" id="name" name="name" placeholder="Enter Your Name" required>
 
-      <!-- AKE Department -->
-      <label>AKE Department:</label>
-      <div class="radio-group">
-        <label><input type="radio" name="akeDepartment" value="P&SS" onclick="toggleOtherDepartment(false)" required> P&SS</label>
-        <label><input type="radio" name="akeDepartment" value="M.S" onclick="toggleOtherDepartment(false)" required> M.S</label>
-        <label><input type="radio" name="akeDepartment" value="Other" onclick="toggleOtherDepartment(true)" required> Other</label>
-      </div>
-      <input type="text" id="otherDepartment" name="otherDepartment" placeholder="Enter department name" style="display:none;" />
+       <!-- email -->
+<label for="email">Email:</label>
+<input type="text" id="email" name="email" placeholder="Enter Your Email" required>
 
-      <!-- Material -->
-      <label for="material">Material Description:</label>
-      <select id="material" name="material" onchange="toggleOtherField(this)" required>
-        <option value=""disabled selected>Select Material</option>
-        <option value="Pump">Pump</option>
-        <option value="Motor">Motor</option>
-        <option value="Aerator">Aerator</option>
-        <option value="Booster Set">Booster Set</option>
-        <option value="Pipe/Threading">Pipe/Threading</option>
-        <option value="3in1 Heat Pump">3in1 Heat Pump</option>
-        <option value="Other">Other</option>
-      </select>
+       <!-- Company Name -->
+<label for="Company Name">Company Name:</label>
+<input type="text" id="Company Name" name="Company Name" placeholder="Enter Your Company Name" required>
+      
+    <!-- Contact Number -->
+<label for="contact">Contact Number:</label>
+<input type="text" id="contact" name="contact" placeholder="Enter Your Contact Number" required>
 
-      <!-- Quantity -->
-      <label for="Quantity">Material Quantity:</label>
-      <select id="Quantity" name="Quantity" onchange="toggleOtherField(this)" required>
-        <option value=""disabled selected>Select Quantity</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="Other">Other</option>
-      </select>
-
-      <!-- Date -->
-      <label for="dateField">Date:</label>
-      <input type="date" id="dateField" name="dateField" required />
 
       <!-- Uploads -->
       <label for="photosInput">Upload or Take Photos (up to 5):</label>
       <input type="file" id="photosInput" accept="image/*" multiple />
       <div id="photoPreview" style="display: flex; flex-wrap: wrap;"></div>
 
-      <!-- Signature -->
-      <label for="signature">Signature:</label>
-      <canvas id="signature" class="signature-pad" required></canvas>
 
       <!-- Submit -->
       <button id="submitBtn" type="button" onclick="submitForm()">Submit</button>
@@ -274,55 +246,7 @@
   </div>
 
   <script>
-    const signatureCanvas = document.getElementById("signature");
-    const ctx = signatureCanvas.getContext("2d");
-    let drawing = false;
-
-    signatureCanvas.addEventListener("mousedown", () => drawing = true);
-    signatureCanvas.addEventListener("mouseup", () => {
-      drawing = false;
-      ctx.beginPath();
-    });
-    signatureCanvas.addEventListener("mousemove", draw);
-
-    signatureCanvas.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      drawing = true;
-      drawTouch(e.touches[0]);
-    });
-    signatureCanvas.addEventListener("touchend", () => {
-      drawing = false;
-      ctx.beginPath();
-    });
-    signatureCanvas.addEventListener("touchmove", (e) => {
-      e.preventDefault();
-      drawTouch(e.touches[0]);
-    });
-
-    function draw(e) {
-      if (!drawing) return;
-      ctx.lineWidth = 2;
-      ctx.lineCap = "round";
-      ctx.strokeStyle = "#000";
-      ctx.lineTo(e.offsetX, e.offsetY);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(e.offsetX, e.offsetY);
-    }
-
-    function drawTouch(touch) {
-      if (!drawing) return;
-      const rect = signatureCanvas.getBoundingClientRect();
-      const x = touch.clientX - rect.left;
-      const y = touch.clientY - rect.top;
-      ctx.lineWidth = 2;
-      ctx.lineCap = "round";
-      ctx.strokeStyle = "#000";
-      ctx.lineTo(x, y);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-    }
+    
 
     function toggleOtherDepartment(show) {
       document.getElementById("otherDepartment").style.display = show ? "block" : "none";
