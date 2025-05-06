@@ -6,33 +6,36 @@
   <title>Contact Us</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+    }
+
+    body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #003366 0%, #005580 100%);
-      background-image: url("https://raw.githubusercontent.com/alkhooryengineering/vehicle/main/Contact.png");
+      background: linear-gradient(135deg, #003366 0%, #005580 100%),
+        url("https://raw.githubusercontent.com/alkhooryengineering/vehicle/main/Contact.png") no-repeat center center fixed;
       background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
       color: #fff;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
       min-height: 100vh;
-      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
     }
 
     .form-container {
       background-color: rgba(255, 255, 255, 0.95);
-      max-width: 500px;
       width: 100%;
+      max-width: 500px;
       border-radius: 16px;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
       color: #222;
       display: flex;
       flex-direction: column;
       animation: slideInRight 0.8s ease-out forwards;
+      overflow: hidden;
     }
 
     @keyframes slideInRight {
@@ -48,12 +51,12 @@
 
     .form-header img {
       width: 100%;
-      border-radius: 16px 16px 0 0;
       display: block;
+      border-radius: 16px 16px 0 0;
     }
 
     .form-content {
-      padding: 30px;
+      padding: 30px 25px;
     }
 
     .form-content h2 {
@@ -61,7 +64,7 @@
       color: #004080;
       font-weight: 600;
       margin-bottom: 30px;
-      font-size: 26px;
+      font-size: 24px;
     }
 
     .form-group {
@@ -120,10 +123,21 @@
       margin: 6px 0;
     }
 
-    @media (max-width: 768px) {
-      body {
-        justify-content: center;
+    @media (max-width: 600px) {
+      .form-container {
+        max-width: 100%;
+      }
+
+      .form-content {
         padding: 20px;
+      }
+
+      .form-content h2 {
+        font-size: 20px;
+      }
+
+      .submit-btn {
+        font-size: 16px;
       }
     }
   </style>
