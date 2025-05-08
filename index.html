@@ -349,7 +349,7 @@
     }
 
     function toggleOtherField(selectElement) {
-      if (selectElement.value === "Other") {
+      if (selectElement.value === "Other" || selectElement.value === "Site") {
         const input = document.createElement("input");
         input.type = "text";
         input.name = selectElement.name;
