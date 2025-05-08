@@ -150,16 +150,16 @@
 
     <form id="orderForm">
       <label for="name">Name:</label>
-      <input type="text" id="name" name="name" placeholder="Enter Your Name" required>
+      <input type="text" id="name" name="name" placeholder="Enter Your Name" maxlength="50" required>
 
       <label for="email">Email:</label>
-      <input type="email" id="email" name="email" placeholder="Enter Your Email" required>
+      <input type="email" id="email" name="email" placeholder="Enter Your Email" maxlength="40" required>
 
       <label for="Company Name">Company Name:</label>
-      <input type="text" id="Company Name" name="Company Name" placeholder="Enter Your Company Name" required>
+      <input type="text" id="Company Name" name="Company Name" placeholder="Enter Your Company Name" maxlength="60" required>
 
       <label for="contact">Contact Number:</label>
-      <input type="number" id="contact" name="contact" placeholder="Enter Your Contact Number" pattern="\d*" maxlength="16" required>
+      <input type="number" id="contact" name="contact" placeholder="Enter Your Contact Number" pattern="\d*" maxlength="17" required>
 
       <label for="query">Query:</label>
 <textarea id="query" name="query" placeholder="Enter your query or message" maxlength="1000" required rows="6" style="width: 100%; max-width: 600px;"></textarea>
