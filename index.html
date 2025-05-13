@@ -430,7 +430,8 @@
     async function submitForm() {
       if (!validateForm()) return;
 
-      document.getElementById("submitBtn").disabled = true;
+      const submitBtn = document.getElementById("submitBtn");
+  submitBtn.disabled = true;
 
       const form = document.getElementById("VehicleForm");
       const formData = new FormData(form);
