@@ -430,15 +430,17 @@
   async function submitForm() {
   const submitBtn = document.getElementById("submitBtn");
   submitBtn.disabled = true;
-
-  const driverName = document.getElementById("driver_name").value;
-  submitBtn.textContent = `Submitting, Please wait Mr. ${driverName}...`;
+  submitBtn.textContent = "Submitting...";
 
   if (!validateForm()) {
     submitBtn.disabled = false;
     submitBtn.textContent = "Submit";
     return;
   }
+
+  const form = document.getElementById("VehicleForm");
+  const formData = new FormData(form);
+
 
   const form = document.getElementById("VehicleForm");
   const formData = new FormData(form);
