@@ -430,7 +430,7 @@
   async function submitForm() {
   const submitBtn = document.getElementById("submitBtn");
   submitBtn.disabled = true;
-  submitBtn.textContent = "Submitting...";
+  submitBtn.textContent = "Submitting, Please wait..";
 
   if (!validateForm()) {
     submitBtn.disabled = false;
