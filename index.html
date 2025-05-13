@@ -427,28 +427,11 @@
       return true;
     }
 
-  async function submitForm() {
-  const submitBtn = document.getElementById("submitBtn");
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Submitting, Please wait..";
+    async function submitForm() {
+      if (!validateForm()) return;
 
-  if (!validateForm()) {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Submit";
-    return;
-  }
-
-  const form = document.getElementById("VehicleForm");
-  const formData = new FormData(form);
-
-
-  const form = document.getElementById("VehicleForm");
-  const formData = new FormData(form);
-
-
-  const form = document.getElementById("VehicleForm");
-  const formData = new FormData(form);
-
+      const form = document.getElementById("VehicleForm");
+      const formData = new FormData(form);
 
       const selectedDept = form.querySelector('input[name="ake_department"]:checked');
       if (selectedDept && selectedDept.value === "Other") {
@@ -532,7 +515,7 @@
     } else {
       const newAttempts = attempts + 1;
       localStorage.setItem("passwordAttempts", newAttempts);
-      message.textContent = `Incorrect password. Attempt ${newAttempts} of ${maxAttempts}.`;
+      message.textContent = Incorrect password. Attempt ${newAttempts} of ${maxAttempts}.;
       input.value = "";
       if (newAttempts >= maxAttempts) {
         localStorage.setItem("lockUntil", Date.now() + blockDuration);
