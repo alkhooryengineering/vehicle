@@ -31,9 +31,9 @@
 
     .header-image {
       width: 100%;
-      max-height: 80px;
+      max-height: 60px;
       object-fit: contain;
-      margin-bottom: 0px;
+      margin-bottom: 10px;
     }
 
     h1 {
@@ -92,7 +92,7 @@
     }
 
     .message {
-      margin-top: 10px;
+      margin-top: 15px;
       font-weight: bold;
       text-align: center;
     }
@@ -515,7 +515,7 @@
     } else {
       const newAttempts = attempts + 1;
       localStorage.setItem("passwordAttempts", newAttempts);
-      message.textContent = Incorrect password. Attempt ${newAttempts} of ${maxAttempts}.;
+      message.textContent = `Incorrect password. Attempt ${newAttempts} of ${maxAttempts}.`;
       input.value = "";
       if (newAttempts >= maxAttempts) {
         localStorage.setItem("lockUntil", Date.now() + blockDuration);
