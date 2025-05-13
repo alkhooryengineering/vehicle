@@ -430,10 +430,8 @@
     async function submitForm() {
       if (!validateForm()) return;
 
-      const submitBtn = document.getElementById("submitBtn");
-  submitBtn.disabled = true;
-
-      const form = document.getElementById("VehicleForm");
+      
+       const form = document.getElementById("VehicleForm");
       const formData = new FormData(form);
 
       const selectedDept = form.querySelector('input[name="ake_department"]:checked');
