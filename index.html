@@ -427,11 +427,20 @@
       return true;
     }
 
-    async function submitForm() {
-      if (!validateForm()) return;
+   async function submitForm() {
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting, Please wait Mr. ${driverName}...";
 
-      const form = document.getElementById("VehicleForm");
-      const formData = new FormData(form);
+  if (!validateForm()) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit";
+    return;
+  }
+
+  const form = document.getElementById("VehicleForm");
+  const formData = new FormData(form);
+
 
       const selectedDept = form.querySelector('input[name="ake_department"]:checked');
       if (selectedDept && selectedDept.value === "Other") {
