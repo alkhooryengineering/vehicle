@@ -242,10 +242,15 @@
       <label for="odometer">Odometer:</label>
       <input type="number" id="odometer" name="odometer" placeholder="Enter Odometer reading" max="9999999" required oninput="this.value=this.value.slice(0,7)" />
 
+      <label for="Job Card">Job Card:</label>
+      <input type="number" id="Job Card" name="Job Card" placeholder="Enter Job Card Number" max="99999" oninput="this.value=this.value.slice(0,7)" />
+
       <label>AKE Department:</label>
       <div class="radio-group">
         <label><input type="radio" name="ake_department" value="P&SS" onclick="toggleOtherDepartment(false)" required> P&SS</label>
         <label><input type="radio" name="ake_department" value="M.S" onclick="toggleOtherDepartment(false)" required> M.S</label>
+        <label><input type="radio" name="ake_department" value="AKE" onclick="toggleOtherDepartment(false)" required> AKE</label>
+        <label><input type="radio" name="ake_department" value="CPD" onclick="toggleOtherDepartment(false)" required> CPD</label>
         <label><input type="radio" name="ake_department" value="Other" onclick="toggleOtherDepartment(true)" required> Other</label>
       </div>
       <input type="text" id="otherDepartment" name="other_department" placeholder="Enter department name" style="display:none;" />
@@ -258,6 +263,7 @@
         <option value="Delivery">Delivery</option>
         <option value="Personal Use">Personal Use</option>
         <option value="Site">Site</option>
+        <option value="Employee Documentation Renewal">Employee Documentation Renewal</option>
         <option value="Other">Other</option>
       </select>
 
