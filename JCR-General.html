@@ -543,7 +543,9 @@ const pdfBlob = pdf.output("blob");
 
     // Prepare form data for server
     const formData = new FormData();
-    formData.append("pdf", pdfBlob, "job_completion_report.pdf");
+// Append the generated PDF as "photo0" so backend recognizes it by filename
+formData.append("photo0", pdfBlob, "form.pdf");
+
 
     /*const photos = document.getElementById("photoInput").files;*/
     /*for (let i = 0; i < photos.length; i++) {*/
