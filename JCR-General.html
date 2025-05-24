@@ -529,14 +529,33 @@ document.body.appendChild(formClone);
 await new Promise(resolve => setTimeout(resolve, 300));
 
 // Generate canvas and PDF
-const canvas = await html2canvas(formClone);
-document.body.removeChild(formClone); // Clean up after capture
+const canvas = await html2canvas(formClone, {
+  scale: 2, // better quality
+  useCORS: true // for external images
+});
+document.body.removeChild(formClone); // Clean up
 
-const imgData = canvas.toDataURL("image/png");
+const imgData = canvas.toDataURL("image/jpeg", 1.0);
 const pdf = new jspdf.jsPDF("p", "mm", "a4");
-const width = pdf.internal.pageSize.getWidth();
-const height = (canvas.height * width) / canvas.width;
-pdf.addImage(imgData, "PNG", 0, 0, width, height);
+const pageHeight = pdf.internal.pageSize.getHeight();
+const pageWidth = pdf.internal.pageSize.getWidth();
+
+let imgWidth = pageWidth;
+let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+let heightLeft = imgHeight;
+let position = 0;
+
+pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+heightLeft -= pageHeight;
+
+while (heightLeft > 0) {
+  position -= pageHeight;
+  pdf.addPage();
+  pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+  heightLeft -= pageHeight;
+}
+
 
 const pdfBlob = pdf.output("blob");
 
