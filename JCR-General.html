@@ -502,8 +502,8 @@ document.getElementById("jobForm").addEventListener("submit", async function (e)
     }
 
  // Clone form for PDF
-const form = document.getElementById("jobForm");
-const formClone = form.cloneNode(true);
+const container = document.querySelector(".container");
+const formClone = container.cloneNode(true);
 
 // Replace signature canvases with images
 if (sig1Data) {
