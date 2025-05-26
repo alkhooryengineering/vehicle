@@ -528,31 +528,43 @@ document.body.appendChild(formClone);
 // Wait a moment for the clone to render
 await new Promise(resolve => setTimeout(resolve, 300));
 
-// Generate canvas and PDF
+// Step 1: Render the form into a canvas
 const canvas = await html2canvas(formClone, {
-  scale: 2, // better quality
-  useCORS: true // for external images
+  scale: 2,
+  useCORS: true
 });
-document.body.removeChild(formClone); // Clean up
 
+// Clean up cloned DOM
+document.body.removeChild(formClone);
+
+// Step 2: Convert canvas to image
 const imgData = canvas.toDataURL("image/jpeg", 1.0);
 const pdf = new jspdf.jsPDF("p", "mm", "a4");
+
+// PDF page dimensions
 const pageHeight = pdf.internal.pageSize.getHeight();
 const pageWidth = pdf.internal.pageSize.getWidth();
 
-let imgWidth = pageWidth;
-let imgHeight = (canvas.height * imgWidth) / canvas.width;
+// Calculate dimensions of the canvas image
+const imgProps = {
+  width: canvas.width,
+  height: canvas.height,
+};
+const ratio = imgProps.width / imgProps.height;
+const pdfImgWidth = pageWidth;
+const pdfImgHeight = pdfImgWidth / ratio;
 
-let heightLeft = imgHeight;
 let position = 0;
+let heightLeft = pdfImgHeight;
 
-pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+// Step 3: Add image and paginate
+pdf.addImage(imgData, "JPEG", 0, position, pdfImgWidth, pdfImgHeight);
 heightLeft -= pageHeight;
 
 while (heightLeft > 0) {
   position -= pageHeight;
   pdf.addPage();
-  pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+  pdf.addImage(imgData, "JPEG", 0, position, pdfImgWidth, pdfImgHeight);
   heightLeft -= pageHeight;
 }
 
