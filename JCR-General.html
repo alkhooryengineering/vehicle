@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Completion Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header-image {
+      width: 100%;
+      max-height: 80px;
+      object-fit: contain;
+      margin-bottom: 0px;
+    }
+
+    .logo {
+      max-width: 120px;
+      height: auto;
+    }
+
+    .grey-strip {
+      background-color: #ccc;
+      padding: 15px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      border-top: 2px solid #999;
+      border-bottom: 2px solid #999;
+    }
+
+    .section {
+      padding: 0 20px 20px 20px;
+    }
+
+    .info-heading {
+      background-color: #ccc;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      border-top: 1px solid #aaa;
+      border-bottom: 1px solid #aaa;
+      margin-top: 20px;
+    }
+
+    .info-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      background-color: #eee;
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+      margin: 0;
+    }
+
+    .info-block {
+      flex: 1;
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-block label {
+      font-weight: bold;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .horizontal-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .horizontal-label label {
+      font-weight: bold;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .horizontal-label input[type="date"] {
+      padding: 6px;
+      font-size: 14px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      background-color: white;
+      flex: 1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td {
+      border: 1px solid #ccc;
+      vertical-align: top;
+    }
+
+    .left-col {
+      width: 20%;
+      font-weight: bold;
+      padding: 10px;
+      background-color: #f3f3f3;
+    }
+
+    .right-col {
+      width: 80%;
+      padding: 0;
+    }
+
+    .editable {
+      padding: 10px;
+      min-height: 120px;
+      font-weight: bold;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      box-sizing: border-box;
+      width: 100%;
+      outline: none;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .signature-area {
+      background-color: #eee;
+      padding: 15px;
+      margin-top: 0;
+    }
+
+    .signature-strip {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: 10px;
+    }
+
+    .signature-strip div {
+      flex: 1;
+    }
+
+    .signature-strip input {
+      width: 90%;
+      padding: 6px;
+      margin-left: 10px;
+    }
+
+    .custom-table {
+      width: 100%;
+      margin-top: 10px;
+      border-collapse: collapse;
+    }
+
+    .custom-table td {
+      border: 1px solid #aaa;
+      padding: 8px;
+    }
+
+    .custom-table .narrow {
+      width: 15%;
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+
+    .custom-table .wide input {
+      width: 100%;
+      padding: 6px;
+      box-sizing: border-box;
+    }
+
+    .signature-pad {
+      border: 1px solid #aaa;
+      width: 100%;
+      height: 150px;
+      margin-top: 0;
+    }
+
+    .photo-upload {
+      margin: 30px 20px;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .photo-grid img {
+      width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      object-fit: cover;
+    }
+
+    footer {
+      background-color: #003366;
+      color: white;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin: 40px 20px 20px 20px;
+      font-size: 14px;
+    }
+
+    .submit-button {
+      display: block;
+      margin: 30px auto 0 auto;
+      padding: 12px 30px;
+      background-color: #003366;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .submit-button:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 768px) {
+      .info-row {
+        flex-direction: column;
+      }
+
+      .horizontal-label {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .horizontal-label input {
+        width: 100%;
+      }
+
+      .signature-strip {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .signature-strip input {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .photo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container" id="header">
+  <img class="header-image" src="https://raw.githubusercontent.com/alkhooryengineering/ake/main/AKE%20LOGO%20(1).jpg" alt="Header" />
+  <hr>
+
+  <!-- Begin Form -->
+  <form id="jobForm">
+    <div class="section">
+      <div class="grey-strip">ANNEXURE - SERVICE / JOB COMPLETION REPORT</div>
+
+      <div class="info-heading">JOB INFORMATION</div>
+
+      <div class="info-row">
+        <div class="info-block">
+          <label for="pr-po">PR/PO REFERENCE</label>
+          <input type="text" id="pr-po" name="pr-po"  required />
+        </div>
+        <div class="info-block">
+          <label for="facility-no">FACILITY NO.</label>
+          <input type="text" id="facility-no" name="facility-no" required  />
+        </div>
+        <div class="info-block">
+          <label for="facility-location">FACILITY LOCATION / ASSET NO</label>
+          <input type="text" id="facility-location" name="facility-location" required />
+        </div>
+        <div class="info-block">
+          <label for="fm-contact">FM POINT OF CONTACT (Name / Mobile No.)</label>
+          <input type="text" id="fm-contact" name="fm-contact" required />
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="horizontal-label" style="flex: 1; min-width: 100px;">
+
+          <label for="date">DATE:</label>
+          <input type="date" id="date" name="date" required />
+        </div>
+        <div class="horizontal-label" style="flex: 1; min-width: 100px;">
+
+          <label for="site-visit-date">Site Visit / Inspection Date:</label>
+
+          <input type="date" id="site-visit-date" name="site-visit-date" required />
+        </div>
+      </div>
+
+      <div class="info-heading" style="margin-bottom: 0;">JOB DETAILS</div>
+
+      <table>
+        <tr> 
+  <td class="left-col">Description</td>
+  <td class="right-col"><div class="editable" contenteditable="true" name="description" data-required="true"></div></td>
+</tr>
+<tr>
+  <td class="left-col">Findings</td>
+  <td class="right-col"><div class="editable" contenteditable="true" name="findings" data-required="true"></div></td>
+</tr>
+<tr>
+  <td class="left-col">Actions Required</td>
+  <td class="right-col"><div class="editable" contenteditable="true" name="actionsRequired" data-required="true"></div></td>
+</tr>
+
+      </table> <br>
+
+
+
+
+
+
+
+
+
+
+<br><br>
+<div>
+<table>
+      <div class="signature-area">
+        <div class="signature-strip">
+          <div>   <center> <b>Report Prepared By:</b> <input type="text"  name="reportPreparedBy" required /> </center> </div>
+          <div>   <center> <b>Report Verified By:</b> <input type="text" /> </center> </div>
+        </div>
+         
+
+
+      
+        <table class="custom-table">
+          
+          <tr>
+ <style>
+  .wide select, .wide input[type="text"] {
+    width: 100%;
+    padding: 6px; /* Adjust padding as needed */
+    box-sizing: border-box;
+    font-size: 14px; /* Optional: match text size */
+  }
+</style>
+
+<tr>
+  <td class="narrow">Company Name</td> 
+  <td class="wide">
+    <select name="company Name" required>
+      <option value="">Select</option>
+      <option value="Al Khoory Engineering">Al Khoory Engineering</option>
+      <option value="M.A.H.Y. Khoory">M.A.H.Y. Khoory</option>
+      <option value="C.P.D">C.P.D</option>
+      <option value="Other">Other</option>
+</select>
+
+  </td>
+
+  <td class="narrow">Verifier Company Name</td>
+  <td class="wide"><input type="text"/></td>
+</tr>
+
+<tr>
+  <td class="narrow">Representative Name</td>
+  <td class="wide">
+    <select name="representativeName" required>
+      <option value="">Select</option>
+      <option value="Senthil Mariappan">Senthil Mariappan</option>
+      <option value="Uday Achari">Uday Achari</option>
+      <option value="Nurul Hassan">Nurul Hassan</option>
+      <option value="Idrees Shaikh">Idrees Shaikh</option>
+       <option value="Other">Other</option>
+    </select>
+  </td>
+
+  <td class="narrow"></td>
+  <td class="wide"><input type="text" /></td>
+</tr>
+
+
+          <tr>
+            <td class="narrow">Date</td>
+            <td class="wide"><input type="date"  name="verifieddate" required /></td>
+
+            <td class="narrow">Verified Date</td>
+            <td class="wide"><input type="date" /></td>
+          </tr>
+
+
+
+
+
+        </table>
+
+       <div style="display: flex; gap: 400px; margin-top: 0;">        
+  <div>
+  <br><br>
+  <div style="margin-left: 100px;">
+    <canvas id="sig1" class="signature-pad"></canvas>
+    <center>
+      <button type="button" onclick="clearSignature('sig1')">Clear Sig 1</button>
+    </center>
+  </div>
+</div>
+
+  <div>
+  <br><br>  <canvas id="sig2" class="signature-pad"></canvas>
+   <center> <button type="button" onclick="clearSignature('sig2')">Clear Sig 2</button>
+  </div>
+</div>
+
+
+
+
+
+</table>
+</div>
+
+
+
+
+
+
+
+
+<br><br>
+
+     <center> <div class="photo-upload">
+        <label><strong>Upload Photos:</strong></label>
+        <input type="file" id="photoInput" multiple accept="image/*" />
+        <div class="photo-grid" id="photoGrid" required></div>
+      </div>
+    </div>
+
+    <button id="submitBtn" type="submit" class="submit-button">Submit</button>
+  </form>
+
+  <!-- End Form -->
+
+
+
+
+  <footer>
+    <p>P.O. Box:41, Dubai, UAE  Tel: +971 4 333 1317, Email: mahykeng@emirates.net.ae</p>
+    <p>ISO 9001, 45001, 14001 CERTIFIED</p>
+  </footer>
+</div>
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+<script>
+  const sigPad1 = new SignaturePad(document.getElementById("sig1"));
+  const sigPad2 = new SignaturePad(document.getElementById("sig2"));
+</script>
+
+
+
+
+
+
+
+
+
+
+<script src="html2pdf.bundle.js"></script>
+
+
+
+<script>
+document.getElementById("jobForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const submitBtn = document.querySelector(".submit-button");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+
+  try {
+    // Get signatures
+    const sig1Data = sigPad1.isEmpty() ? null : sigPad1.toDataURL();
+    const sig2Data = sigPad2.isEmpty() ? null : sigPad2.toDataURL();
+
+    // Validate required fields
+    const required = document.querySelectorAll("[data-required='true']");
+    for (const el of required) {
+      if (!el.innerText.trim()) {
+        alert("Please fill all required fields.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
+        return;
+      }
+    }
+
+ // Clone form for PDF
+const container = document.querySelector(".container");
+const formClone = container.cloneNode(true);
+
+// Replace signature canvases with images
+if (sig1Data) {
+  const img1 = document.createElement("img");
+  img1.src = sig1Data;
+  img1.style.maxWidth = "300px";
+  formClone.querySelector("#sig1").replaceWith(img1);
+}
+
+if (sig2Data) {
+  const img2 = document.createElement("img");
+  img2.src = sig2Data;
+  img2.style.maxWidth = "300px";
+  formClone.querySelector("#sig2").replaceWith(img2);
+}
+
+// Temporarily add the form to the DOM for html2canvas to render it properly
+formClone.style.position = "absolute";
+formClone.style.left = "-9999px";
+document.body.appendChild(formClone);
+
+// Wait a moment for the clone to render
+await new Promise(resolve => setTimeout(resolve, 300));
+
+
+
+
+
+    // Add the clone temporarily to the DOM so it can render
+formClone.style.position = "absolute";
+formClone.style.left = "-9999px";
+document.body.appendChild(formClone);
+
+// Wait for DOM to render
+await new Promise(resolve => setTimeout(resolve, 300));
+
+// Generate and get the PDF Blob using html2pdf
+const pdfBlob = await html2pdf()
+  .set({
+    margin:       0,
+    filename:     'order.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 1, useCORS: true },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  })
+  .from(formClone)
+  .outputPdf('blob');
+
+// Clean up
+document.body.removeChild(formClone);
+
+
+    
+
+
+    // Prepare form data for server
+    const formData = new FormData();
+// Append the generated PDF as "photo0" so backend recognizes it by filename
+formData.append("pdf", pdfBlob, "order.pdf");
+
+
+
+    /*const photos = document.getElementById("photoInput").files;*/
+    /*for (let i = 0; i < photos.length; i++) {*/
+     /*formData.append("photos", photos[i]);*/
+    /*}*/
+
+    // Send to backend
+    const response = await fetch("https://ake-form-backend.onrender.com/send-pdf", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      alert("Form submitted successfully!");
+    } else {
+      alert("Submission failed. Please try again.");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred.");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit";
+  }
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+
+
+<script>
+  document.getElementById("jobForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    // Collect data, generate PDF, and send email logic goes here.
+    alert("Form submitted successfully (add actual logic).");
+  });
+</script>
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const sigPad1 = new SignaturePad(document.getElementById("sig1"));
+  const sigPad2 = new SignaturePad(document.getElementById("sig2"));
+
+  // Attach sigPad1 and sigPad2 to global scope if needed later
+  window.sigPad1 = sigPad1;
+  window.sigPad2 = sigPad2;
+});
+</script>
+
+
+
+
+
+
+<script>
+  function clearSignature(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+</script>
+
+
+
+
+
+<script>
+  function handleEnterKey(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const div = e.currentTarget;
+      const lines = div.innerText.split('\n').filter(Boolean);
+      let output = '';
+      let numberIndex = 1;
+      let letterIndex = 0;
+      let mode = 'number';
+      let previousMode = 'number';
+      const lastLine = lines[lines.length - 1] || '';
+      if (/^\s*[a-zA-Z]\.\s*/.test(lastLine)) {
+        mode = 'letter';
+      }
+
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        if (/^[a-zA-Z]\.\s*/.test(line)) {
+          if (previousMode !== 'letter') letterIndex = 0;
+          previousMode = 'letter';
+          output +=     ${String.fromCharCode(97 + letterIndex)}. ${line.replace(/^[a-zA-Z]\.\s*/, '')}\n;
+          letterIndex++;
+        } else {
+          previousMode = 'number';
+          output += ${numberIndex}. ${line.replace(/^\d+\.\s*/, '')}\n;
+          numberIndex++;
+        }
+      }
+
+      output += mode === 'letter'
+        ?     ${String.fromCharCode(97 + letterIndex)}. 
+        : ${numberIndex}. ;
+
+      div.innerText = output;
+      placeCursorAtEnd(div);
+    }
+  }
+
+  function placeCursorAtEnd(el) {
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  document.querySelectorAll('.editable').forEach(cell => {
+    cell.addEventListener('keydown', handleEnterKey);
+  });
+
+  function enableSignaturePad(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    function resizeCanvas() {
+      const temp = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      ctx.putImageData(temp, 0, 0);
+    }
+
+    resizeCanvas();
+
+    canvas.addEventListener('mousedown', (e) => {
+      drawing = true;
+      ctx.beginPath();
+      ctx.moveTo(e.offsetX, e.offsetY);
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (drawing) {
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+      }
+    });
+
+    canvas.addEventListener('mouseup', () => drawing = false);
+    canvas.addEventListener('mouseleave', () => drawing = false);
+
+    canvas.addEventListener('touchstart', function (e) {
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      drawing = true;
+    });
+
+    canvas.addEventListener('touchmove', function (e) {
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      e.preventDefault();
+    });
+
+    canvas.addEventListener('touchend', () => drawing = false);
+    window.addEventListener('resize', resizeCanvas);
+  }
+
+  enableSignaturePad("sig1");
+  enableSignaturePad("sig2");
+
+  const photoInput = document.getElementById("photoInput");
+  const photoGrid = document.getElementById("photoGrid");
+
+  photoInput.addEventListener("change", function () {
+    const files = Array.from(photoInput.files).slice(0, 9 - photoGrid.children.length);
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        photoGrid.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+    photoInput.value = '';
+  });
+</script>
+
+
+</body>
+</html>
