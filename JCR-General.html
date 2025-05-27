@@ -529,16 +529,20 @@ document.body.appendChild(formClone);
 
    await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
 
-    const pdfBlob = await html2pdf()
-      .set({
-        margin: 0,
-        filename: 'order.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 1, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      })
-      .from(formClone)
-      .save();
+   // Generate the PDF as a Data URI string
+const pdfDataUri = await html2pdf()
+  .set({
+    margin: 0,
+    filename: 'order.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, willReadFrequently: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  })
+  .from(formClone)
+  .outputPdf('datauristring'); // ✅ Returns base64 string, not download
+
+    // 2. Convert data URI to Blob
+const pdfBlob = dataURItoBlob(pdfDataUri);
 
     if (formClone.parentNode) {
       document.body.removeChild(formClone);
@@ -590,6 +594,23 @@ document.body.appendChild(formClone);
 
 
 <script>
+
+
+
+function dataURItoBlob(dataURI) {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+  }
+
+
+
+  
   document.getElementById("jobForm").addEventListener("submit", function (e) {
     e.preventDefault();
     // Collect data, generate PDF, and send email logic goes here.
