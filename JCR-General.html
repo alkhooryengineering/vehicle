@@ -651,10 +651,11 @@ document.addEventListener("DOMContentLoaded", function () {
           if (previousMode !== 'letter') letterIndex = 0;
           previousMode = 'letter';
          output += `${String.fromCharCode(97 + letterIndex)}. ${line.replace(/^[a-zA-Z]\.\s*/, '')}\n`;
+
           letterIndex++;
         } else {
           previousMode = 'number';
-          output += ${numberIndex}. ${line.replace(/^\d+\.\s*/, '')}\n;
+          output += `${numberIndex}. ${line.replace(/^\d+\.\s*/, '')}\n`;
           numberIndex++;
         }
       }
