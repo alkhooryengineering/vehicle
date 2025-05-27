@@ -4,10 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Job Completion Report</title>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
-  
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -342,9 +338,9 @@
 
 
       
-       
+        <table class="custom-table">
           
-  
+          <tr>
  <style>
   .wide select, .wide input[type="text"] {
     width: 100%;
@@ -354,11 +350,10 @@
   }
 </style>
 
-             <table class="custom-table">
 <tr>
   <td class="narrow">Company Name</td> 
   <td class="wide">
-    <select name="companyName" required>
+    <select name="company Name" required>
       <option value="">Select</option>
       <option value="Al Khoory Engineering">Al Khoory Engineering</option>
       <option value="M.A.H.Y. Khoory">M.A.H.Y. Khoory</option>
@@ -415,14 +410,17 @@
   </div>
 </div>
 
-<div>
-  <br><br>  
-  <canvas id="sig2" class="signature-pad"></canvas>
-  <center> 
-    <button type="button" onclick="clearSignature('sig2')">Clear Sig 2</button>
-  </center>
+  <div>
+  <br><br>  <canvas id="sig2" class="signature-pad"></canvas>
+   <center> <button type="button" onclick="clearSignature('sig2')">Clear Sig 2</button>
+  </div>
 </div>
 
+
+
+
+
+</table>
 </div>
 
 
@@ -475,10 +473,13 @@
 
 
 
-<!-- Load html2pdf.bundle.js first -->
 
-<!-- PDF script -->
-      <script>
+
+<script src="html2pdf.bundle.js"></script>
+
+
+
+<script>
 document.getElementById("jobForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
@@ -487,9 +488,11 @@ document.getElementById("jobForm").addEventListener("submit", async function (e)
   submitBtn.textContent = "Submitting...";
 
   try {
+    // Get signatures
     const sig1Data = sigPad1.isEmpty() ? null : sigPad1.toDataURL();
     const sig2Data = sigPad2.isEmpty() ? null : sigPad2.toDataURL();
 
+    // Validate required fields
     const required = document.querySelectorAll("[data-required='true']");
     for (const el of required) {
       if (!el.innerText.trim()) {
@@ -500,98 +503,124 @@ document.getElementById("jobForm").addEventListener("submit", async function (e)
       }
     }
 
-    const container = document.querySelector(".container");
-    const formClone = container.cloneNode(true);
+ // Clone form for PDF
+const container = document.querySelector(".container");
+const formClone = container.cloneNode(true);
 
-    if (sig1Data) {
-      const img1 = document.createElement("img");
-      img1.src = sig1Data;
-      img1.style.maxWidth = "300px";
-      formClone.querySelector("#sig1").replaceWith(img1);
-    }
+// Replace signature canvases with images
+if (sig1Data) {
+  const img1 = document.createElement("img");
+  img1.src = sig1Data;
+  img1.style.maxWidth = "300px";
+  formClone.querySelector("#sig1").replaceWith(img1);
+}
 
-    if (sig2Data) {
-      const img2 = document.createElement("img");
-      img2.src = sig2Data;
-      img2.style.maxWidth = "300px";
-      formClone.querySelector("#sig2").replaceWith(img2);
-    }
+if (sig2Data) {
+  const img2 = document.createElement("img");
+  img2.src = sig2Data;
+  img2.style.maxWidth = "300px";
+  formClone.querySelector("#sig2").replaceWith(img2);
+}
 
-    formClone.style.position = "absolute";
-formClone.style.top = "-10000px";  // move offscreen but still renderable
-formClone.style.left = "0";
-formClone.style.width = "210mm";
-formClone.style.height = "297mm";
-formClone.style.background = "white";
+// Temporarily add the form to the DOM for html2canvas to render it properly
+formClone.style.position = "absolute";
+formClone.style.left = "-9999px";
 document.body.appendChild(formClone);
+
+// Wait a moment for the clone to render
+await new Promise(resolve => setTimeout(resolve, 300));
+
+
+
+
+
+    // Add the clone temporarily to the DOM so it can render
+formClone.style.position = "absolute";
+formClone.style.left = "-9999px";
+document.body.appendChild(formClone);
+
+// Wait for DOM to render
+await new Promise(resolve => setTimeout(resolve, 300));
+
+// Generate and get the PDF Blob using html2pdf
+const pdfBlob = await html2pdf()
+  .set({
+    margin:       0,
+    filename:     'order.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 1, useCORS: true },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  })
+  .from(formClone)
+  .outputPdf('blob');
+
+// Clean up
+document.body.removeChild(formClone);
+
+
     
-await html2pdf().set(opt).from(formClone).outputPdf('blob');
 
 
-    const opt = {
-      margin: 0,
-      filename: 'job_completion_form.pdf',
-      image: { type: 'jpeg', quality: 0.7 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-    };
+    // Prepare form data for server
+    const formData = new FormData();
+// Append the generated PDF as "photo0" so backend recognizes it by filename
+formData.append("pdf", pdfBlob, "order.pdf");
 
-    const pdfBlob = await html2pdf()
-      .set(opt)
-      .from(formClone)
-      .outputPdf('blob');
 
-    // Remove cloned form after PDF generation
-    document.body.removeChild(formClone);
 
-    // Prepare FormData
-    const formData = new FormData(document.getElementById("jobForm"));
-    formData.append("pdf", pdfBlob, "job_completion_form.pdf");
+    /*const photos = document.getElementById("photoInput").files;*/
+    /*for (let i = 0; i < photos.length; i++) {*/
+     /*formData.append("photos", photos[i]);*/
+    /*}*/
 
     // Send to backend
     const response = await fetch("https://ake-form-backend.onrender.com/send-pdf", {
       method: "POST",
-      body: formData
+      body: formData,
     });
 
     if (response.ok) {
-      alert("✅ Email sent successfully!");
-      document.getElementById("jobForm").reset();
-      // Clear signatures here if needed, clear editable divs, photos etc
+      alert("Form submitted successfully!");
     } else {
-      alert("❌ Email failed. Try again.");
+      alert("Submission failed. Please try again.");
     }
-  } catch (err) {
-    console.error("Submission error:", err);
-    alert("❌ Submission error.");
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred.");
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = "Submit";
   }
 });
-    </script>
+</script>
 
 
 
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 
 
 <script>
-
-
-
-function dataURItoBlob(dataURI) {
-    const byteString = atob(dataURI.split(',')[1]);
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ab], { type: mimeString });
-  }
-
+  document.getElementById("jobForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    // Collect data, generate PDF, and send email logic goes here.
+    alert("Form submitted successfully (add actual logic).");
+  });
 </script>
 
 
@@ -627,98 +656,132 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <script>
-document.getElementById("jobForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
-
-  const submitBtn = document.querySelector(".submit-button");
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Submitting...";
-
-  try {
-    const sig1Data = sigPad1.isEmpty() ? null : sigPad1.toDataURL();
-    const sig2Data = sigPad2.isEmpty() ? null : sigPad2.toDataURL();
-
-    const required = document.querySelectorAll("[data-required='true']");
-    for (const el of required) {
-      if (!el.innerText.trim()) {
-        alert("Please fill all required fields.");
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Submit";
-        return;
+  function handleEnterKey(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const div = e.currentTarget;
+      const lines = div.innerText.split('\n').filter(Boolean);
+      let output = '';
+      let numberIndex = 1;
+      let letterIndex = 0;
+      let mode = 'number';
+      let previousMode = 'number';
+      const lastLine = lines[lines.length - 1] || '';
+      if (/^\s*[a-zA-Z]\.\s*/.test(lastLine)) {
+        mode = 'letter';
       }
+
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        if (/^[a-zA-Z]\.\s*/.test(line)) {
+          if (previousMode !== 'letter') letterIndex = 0;
+          previousMode = 'letter';
+          output +=     ${String.fromCharCode(97 + letterIndex)}. ${line.replace(/^[a-zA-Z]\.\s*/, '')}\n;
+          letterIndex++;
+        } else {
+          previousMode = 'number';
+          output += ${numberIndex}. ${line.replace(/^\d+\.\s*/, '')}\n;
+          numberIndex++;
+        }
+      }
+
+      output += mode === 'letter'
+        ?     ${String.fromCharCode(97 + letterIndex)}. 
+        : ${numberIndex}. ;
+
+      div.innerText = output;
+      placeCursorAtEnd(div);
+    }
+  }
+
+  function placeCursorAtEnd(el) {
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  document.querySelectorAll('.editable').forEach(cell => {
+    cell.addEventListener('keydown', handleEnterKey);
+  });
+
+  function enableSignaturePad(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    function resizeCanvas() {
+      const temp = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      ctx.putImageData(temp, 0, 0);
     }
 
-    const container = document.querySelector(".container");
-    const formClone = container.cloneNode(true);
+    resizeCanvas();
 
-    if (sig1Data) {
-      const img1 = document.createElement("img");
-      img1.src = sig1Data;
-      img1.style.maxWidth = "300px";
-      formClone.querySelector("#sig1").replaceWith(img1);
-    }
-
-    if (sig2Data) {
-      const img2 = document.createElement("img");
-      img2.src = sig2Data;
-      img2.style.maxWidth = "300px";
-      formClone.querySelector("#sig2").replaceWith(img2);
-    }
-
-    formClone.style.position = "absolute";
-    formClone.style.top = "-10000px";  // move offscreen but still renderable
-    formClone.style.left = "0";
-    formClone.style.width = "210mm";
-    formClone.style.height = "297mm";
-    formClone.style.background = "white";
-    document.body.appendChild(formClone);
-
-    // Declare opt before usage
-    const opt = {
-      margin: 0,
-      filename: 'job_completion_form.pdf',
-      image: { type: 'jpeg', quality: 0.7 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-    };
-
-    // Generate PDF once
-    const pdfBlob = await html2pdf()
-      .set(opt)
-      .from(formClone)
-      .outputPdf('blob');
-
-    // Remove cloned form after PDF generation
-    document.body.removeChild(formClone);
-
-    // Prepare FormData
-    const formData = new FormData(document.getElementById("jobForm"));
-    formData.append("pdf", pdfBlob, "job_completion_form.pdf");
-
-    // Send to backend
-    const response = await fetch("https://ake-form-backend.onrender.com/send-pdf", {
-      method: "POST",
-      body: formData
+    canvas.addEventListener('mousedown', (e) => {
+      drawing = true;
+      ctx.beginPath();
+      ctx.moveTo(e.offsetX, e.offsetY);
     });
 
-    if (response.ok) {
-      alert("✅ Email sent successfully!");
-      document.getElementById("jobForm").reset();
-      // Clear signatures here if needed, clear editable divs, photos etc
-    } else {
-      alert("❌ Email failed. Try again.");
-    }
-  } catch (err) {
-    console.error("Submission error:", err);
-    alert("❌ Submission error.");
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Submit";
-  }
-});
-</script>
+    canvas.addEventListener('mousemove', (e) => {
+      if (drawing) {
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+      }
+    });
 
+    canvas.addEventListener('mouseup', () => drawing = false);
+    canvas.addEventListener('mouseleave', () => drawing = false);
+
+    canvas.addEventListener('touchstart', function (e) {
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      drawing = true;
+    });
+
+    canvas.addEventListener('touchmove', function (e) {
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      e.preventDefault();
+    });
+
+    canvas.addEventListener('touchend', () => drawing = false);
+    window.addEventListener('resize', resizeCanvas);
+  }
+
+  enableSignaturePad("sig1");
+  enableSignaturePad("sig2");
+
+  const photoInput = document.getElementById("photoInput");
+  const photoGrid = document.getElementById("photoGrid");
+
+  photoInput.addEventListener("change", function () {
+    const files = Array.from(photoInput.files).slice(0, 9 - photoGrid.children.length);
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        photoGrid.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+    photoInput.value = '';
+  });
+</script>
 
 
 </body>
