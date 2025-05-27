@@ -550,6 +550,27 @@ html2pdf()
   .then(async function(pdf) {
     const pdfBlob = pdf.output("blob");
 
+
+
+// Trigger local download
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = 'job_completion_form.pdf';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(blobUrl);
+
+    // Continue sending PDF to backend...
+    const formData = new FormData(document.getElementById("jobForm"));
+    formData.append("pdf", pdfBlob, "job_completion_form.pdf");
+
+
+
+
+    
+
     const formData = new FormData(document.getElementById("jobForm")); // 👈 Replace with your actual form ID
     formData.append("pdf", pdfBlob, "job_completion_form.pdf");
 
