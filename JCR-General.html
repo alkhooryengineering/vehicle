@@ -527,7 +527,7 @@ document.body.appendChild(formClone);
     // THIS is the correct
     console.log("Cloned HTML:", formClone.outerHTML);
 
-    await new Promise(resolve => setTimeout(resolve, 300));
+   await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
 
     const pdfBlob = await html2pdf()
       .set({
@@ -538,7 +538,7 @@ document.body.appendChild(formClone);
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       })
       .from(formClone)
-      .outputPdf('blob');
+      .save();
 
     if (formClone.parentNode) {
       document.body.removeChild(formClone);
