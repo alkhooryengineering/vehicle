@@ -567,6 +567,10 @@ html2pdf()
 
     const formData = new FormData(/* your form element */);
 
+    <script>
+  submitBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
+
     try {
       const response = await fetch("https://ake-form-backend.onrender.com/send-pdf", {
         method: "POST",
@@ -603,6 +607,7 @@ html2pdf()
     }
   });
 </script>
+
 
 
 
