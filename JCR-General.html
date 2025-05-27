@@ -530,7 +530,7 @@ await new Promise(resolve => setTimeout(resolve, 300));
 
 // Step 1: Render the form into a canvas
 const canvas = await html2canvas(formClone, {
-  scale: 2,
+  scale: 1.0,
   useCORS: true
 });
 
@@ -538,7 +538,7 @@ const canvas = await html2canvas(formClone, {
 document.body.removeChild(formClone);
 
 // Step 2: Convert canvas to image
-const imgData = canvas.toDataURL("image/jpeg", 1.0);
+const imgData = canvas.toDataURL("image/jpeg", 0.6);
 const pdf = new jspdf.jsPDF("p", "mm", "a4");
 
 // PDF page dimensions
