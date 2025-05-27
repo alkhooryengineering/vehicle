@@ -476,7 +476,6 @@
 
 
 <!-- Load html2pdf.bundle.js first -->
-<script src="html2pdf.bundle.js"></script>
 
 <!-- PDF script -->
 <script>
@@ -629,14 +628,6 @@ function dataURItoBlob(dataURI) {
     return new Blob([ab], { type: mimeString });
   }
 
-
-
-  
-  document.getElementById("jobForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    // Collect data, generate PDF, and send email logic goes here.
-    alert("Form submitted successfully (add actual logic).");
-  });
 </script>
 
 
