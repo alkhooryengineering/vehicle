@@ -475,8 +475,8 @@
 
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="html2pdf.bundle.js"></script>
+
 <script>
 document.getElementById("jobForm").addEventListener("submit", async function (e) {
   e.preventDefault();
@@ -528,48 +528,35 @@ document.body.appendChild(formClone);
 // Wait a moment for the clone to render
 await new Promise(resolve => setTimeout(resolve, 300));
 
-// Step 1: Render the form into a canvas
-const canvas = await html2canvas(formClone, {
-  scale: 1.0,
-  useCORS: true
-});
 
-// Clean up cloned DOM
+
+
+
+    // Add the clone temporarily to the DOM so it can render
+formClone.style.position = "absolute";
+formClone.style.left = "-9999px";
+document.body.appendChild(formClone);
+
+// Wait for DOM to render
+await new Promise(resolve => setTimeout(resolve, 300));
+
+// Generate and get the PDF Blob using html2pdf
+const pdfBlob = await html2pdf()
+  .set({
+    margin:       0,
+    filename:     'order.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 1, useCORS: true },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  })
+  .from(formClone)
+  .outputPdf('blob');
+
+// Clean up
 document.body.removeChild(formClone);
 
-// Step 2: Convert canvas to image
-const imgData = canvas.toDataURL("image/jpeg", 0.6);
-const pdf = new jspdf.jsPDF("p", "mm", "a4");
 
-// PDF page dimensions
-const pageHeight = pdf.internal.pageSize.getHeight();
-const pageWidth = pdf.internal.pageSize.getWidth();
-
-// Calculate dimensions of the canvas image
-const imgProps = {
-  width: canvas.width,
-  height: canvas.height,
-};
-const ratio = imgProps.width / imgProps.height;
-const pdfImgWidth = pageWidth;
-const pdfImgHeight = pdfImgWidth / ratio;
-
-let position = 0;
-let heightLeft = pdfImgHeight;
-
-// Step 3: Add image and paginate
-pdf.addImage(imgData, "JPEG", 0, position, pdfImgWidth, pdfImgHeight);
-heightLeft -= pageHeight;
-
-while (heightLeft > 0) {
-  position -= pageHeight;
-  pdf.addPage();
-  pdf.addImage(imgData, "JPEG", 0, position, pdfImgWidth, pdfImgHeight);
-  heightLeft -= pageHeight;
-}
-
-
-const pdfBlob = pdf.output("blob");
+    
 
 
     // Prepare form data for server
