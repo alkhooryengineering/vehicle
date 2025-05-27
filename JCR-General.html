@@ -524,8 +524,9 @@ formClone.style.width = "210mm";
 formClone.style.height = "297mm";
 formClone.style.background = "white";
 document.body.appendChild(formClone);
+    
+await html2pdf().set(opt).from(formClone).outputPdf('blob');
 
-    await new Promise(resolve => setTimeout(resolve, 1000)); // wait for render
 
     const opt = {
       margin: 0,
