@@ -525,7 +525,7 @@ if (sig2Data) {
 // Temporarily add the form to the DOM for html2canvas to render it properly
 formClone.style.position = "absolute";
 formClone.style.left = "-9999px";
-document.body.appendChild(formClone);
+//document.body.appendChild(formClone);
 
 // Wait a moment for the clone to render
 await new Promise(resolve => setTimeout(resolve, 300));
@@ -537,7 +537,7 @@ await new Promise(resolve => setTimeout(resolve, 300));
     // Add the clone temporarily to the DOM so it can render
 formClone.style.position = "absolute";
 formClone.style.left = "-9999px";
-document.body.appendChild(formClone);
+//document.body.appendChild(formClone);
 
 // Wait for DOM to render
 await new Promise(resolve => setTimeout(resolve, 300));
