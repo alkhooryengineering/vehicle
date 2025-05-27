@@ -615,17 +615,6 @@ formData.append("pdf", pdfBlob, "order.pdf");
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 
 
-<script>
-  document.getElementById("jobForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    // Collect data, generate PDF, and send email logic goes here.
-    alert("Form submitted successfully (add actual logic).");
-  });
-</script>
-
-
-
-
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -676,7 +665,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (/^[a-zA-Z]\.\s*/.test(line)) {
           if (previousMode !== 'letter') letterIndex = 0;
           previousMode = 'letter';
-          output +=     ${String.fromCharCode(97 + letterIndex)}. ${line.replace(/^[a-zA-Z]\.\s*/, '')}\n;
+        output += `${String.fromCharCode(97 + letterIndex)}. ${line.replace(/^[a-zA-Z]\.\s*/, '')}\n`;
           letterIndex++;
         } else {
           previousMode = 'number';
