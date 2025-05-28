@@ -528,14 +528,14 @@
     if (sigBlob2) formData.append("signature2.png", sigBlob2, "signature2.png");
 
     // Append photos as blobs from displayed images
-    const photoGrid = document.getElementById("photoGrid");
+    //const photoGrid = document.getElementById("photoGrid");
     // We do not have File objects stored separately, so we reconstruct blobs by fetching data URLs from images
-    for (let i = 0; i < photoGrid.children.length; i++) {
-      const img = photoGrid.children[i];
-      const dataURL = img.src;
-      const blob = dataURLtoBlob(dataURL);
-      formData.append("photo" + i + ".jpeg", blob, "photo" + i + ".jpeg");
-    }
+    //for (let i = 0; i < photoGrid.children.length; i++) {
+      //const img = photoGrid.children[i];
+      //const dataURL = img.src;
+      //const blob = dataURLtoBlob(dataURL);
+      //formData.append("photo" + i + ".jpeg", blob, "photo" + i + ".jpeg");
+    //}
 
     // PDF generation options
     const opt = {
