@@ -179,11 +179,16 @@
   margin-top: 15px;
 }
     
-    .photo-grid img {
-      width: 100%;
-      height: auto;
-      border: 1px solid #ccc;
-      object-fit: cover;
+    
+  .photo-grid img {
+  width: calc(33.333% - 10px); /* Three per row with gap compensation */
+  max-width: 200px;             /* Optional: prevent overly large images */
+  height: auto;
+  border: 1px solid #ccc;
+  object-fit: cover;
+}
+
+    
     }
     footer {
       background-color: #003366;
