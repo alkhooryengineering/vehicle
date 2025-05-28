@@ -534,7 +534,7 @@ formClone.style.boxSizing = 'border-box';
 
   document.body.appendChild(formClone);
 
-  formClone.querySelectorAll("canvas, script, input[type='file'], button, #submitBtn").forEach(el => el.remove());
+  formClone.querySelectorAll("script, input[type='file'], button, #submitBtn").forEach(el => el.remove());
 
   try {
     await new Promise(resolve => setTimeout(resolve, 1000));
