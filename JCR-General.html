@@ -568,13 +568,6 @@ html2pdf()
     a.remove();
     URL.revokeObjectURL(blobUrl);
 
-    // Continue sending PDF to backend...
-    const formData = new FormData(document.getElementById("jobForm"));
-    formData.append("pdf", pdfBlob, "job_completion_form.pdf");
-
-
-
-
     
 
     const formData = new FormData(document.getElementById("jobForm")); // 👈 Replace with your actual form ID
