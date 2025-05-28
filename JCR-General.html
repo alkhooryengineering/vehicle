@@ -484,66 +484,53 @@ document.getElementById("jobForm").addEventListener("submit", async function (e)
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
 
-  const sig1Data = sigPad1.isEmpty() ? null : sigPad1.toDataURL();
-  const sig2Data = sigPad2.isEmpty() ? null : sigPad2.toDataURL();
-
-  const required = document.querySelectorAll("[data-required='true']");
-  for (const el of required) {
-    if (!el.innerText.trim()) {
-      alert("Please fill all required fields.");
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Submit";
-      return;
-    }
-  }
-
-  const container = document.querySelector(".container");
-  const formClone = container.cloneNode(true);
-
-  if (sig1Data) {
-    const img1 = document.createElement("img");
-    img1.src = sig1Data;
-    img1.style.maxWidth = "300px";
-    formClone.querySelector("#sig1").replaceWith(img1);
-  }
-
-  if (sig2Data) {
-    const img2 = document.createElement("img");
-    img2.src = sig2Data;
-    img2.style.maxWidth = "300px";
-    formClone.querySelector("#sig2").replaceWith(img2);
-  }
-
- formClone.style.position = 'absolute';
-formClone.style.top = '0';
-formClone.style.left = '-9999px'; // move it off-screen to avoid display but keep visible
-formClone.style.visibility = 'visible'; // ensure it's rendered
-formClone.style.width = '100%';
-formClone.style.background = 'white';
-formClone.style.boxSizing = 'border-box';
-
-
-  document.body.appendChild(formClone);
-
-  formClone.querySelectorAll("script, input[type='file'], button, #submitBtn").forEach(el => el.remove());
-
   try {
+    const sig1Data = sigPad1.isEmpty() ? null : sigPad1.toDataURL();
+    const sig2Data = sigPad2.isEmpty() ? null : sigPad2.toDataURL();
 
-// Optional pause (can be removed if not needed)
-await new Promise(resolve => setTimeout(resolve, 500));
+    const required = document.querySelectorAll("[data-required='true']");
+    for (const el of required) {
+      if (!el.innerText.trim()) {
+        alert("Please fill all required fields.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
+        return;
+      }
+    }
 
-// ✅ Wait for all images in the cloned form to load
-await Promise.all(
-  Array.from(formClone.querySelectorAll("img")).map(img =>
-    img.complete ? Promise.resolve() :
-    new Promise(resolve => {
-      img.onload = img.onerror = resolve;
-    })
-  )
-);
+    const container = document.querySelector(".container");
+    const formClone = container.cloneNode(true);
 
-// ✅ Generate the PDF
-const opt = {
+    if (sig1Data) {
+      const img1 = document.createElement("img");
+      img1.src = sig1Data;
+      img1.style.maxWidth = "300px";
+      formClone.querySelector("#sig1").replaceWith(img1);
+    }
+
+    if (sig2Data) {
+      const img2 = document.createElement("img");
+      img2.src = sig2Data;
+      img2.style.maxWidth = "300px";
+      formClone.querySelector("#sig2").replaceWith(img2);
+    }
+
+   formClone.style.position = "fixed";
+formClone.style.top = "0";
+formClone.style.left = "0";
+formClone.style.width = "210mm"; // A4 width approx
+formClone.style.height = "297mm"; // A4 height approx
+formClone.style.zIndex = "10000";
+formClone.style.background = "white"; // ensure bg is white
+document.body.appendChild(formClone);
+
+
+    // THIS is the correct
+    console.log("Cloned HTML:", formClone.outerHTML);
+
+   await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
+
+  const opt = {
   margin: 0,
   filename: 'job_completion_form.pdf',
   image: { type: 'jpeg', quality: 0.7 },
@@ -552,63 +539,56 @@ const opt = {
   pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
 };
 
-const pdf = await html2pdf().set(opt).from(formClone).toPdf().get('pdf');
-const pdfBlob = pdf.output("blob");
+html2pdf()
+  .set(opt)
+.from(formClone)
+  .toPdf()
+  .get('pdf')
+  .then(async function(pdf) {
+    const pdfBlob = pdf.output("blob");
 
-// ✅ Trigger download of PDF
-const blobUrl = URL.createObjectURL(pdfBlob);
-const a = document.createElement('a');
-a.href = blobUrl;
-a.download = 'job_completion_form.pdf';
-document.body.appendChild(a);
-a.click();
-a.remove();
-URL.revokeObjectURL(blobUrl);
+    const formData = new FormData(document.getElementById("jobForm")); // 👈 Replace with your actual form ID
+    formData.append("pdf", pdfBlob, "job_completion_form.pdf");
 
-// ✅ Prepare and send form data
-const formData = new FormData(document.getElementById("jobForm"));
-formData.append("pdf", pdfBlob, "job_completion_form.pdf");
+    const messageDiv = document.getElementById("message"); // Optional
 
-const response = await fetch("https://ake-form-backend.onrender.com/send-pdf", {
-  method: "POST",
-  body: formData
-});
+    try {
+      const response = await fetch("https://ake-form-backend.onrender.com/send-pdf", {
+        method: "POST",
+        body: formData
+      });
 
-    
-
-    const messageDiv = document.getElementById("message");
-
-    if (response.ok) {
-      alert("✅ Email sent successfully!");
-      if (messageDiv) {
-        messageDiv.textContent = "✅ Email sent successfully!";
-        messageDiv.style.color = "green";
+      if (response.ok) {
+        alert("✅ Email sent successfully!");
+        if (messageDiv) {
+          messageDiv.textContent = "✅ Email sent successfully!";
+          messageDiv.style.color = "green";
+        }
+      } else {
+        alert("❌ Email failed. Try again.");
+        if (messageDiv) {
+          messageDiv.textContent = "❌ Submission failed.";
+          messageDiv.style.color = "red";
+        }
       }
-    } else {
-      alert("❌ Email failed. Try again.");
+    } catch (err) {
+      console.error("Submission error:", err);
+      alert("❌ Submission error.");
       if (messageDiv) {
-        messageDiv.textContent = "❌ Submission failed.";
+        messageDiv.textContent = "❌ Submission error.";
         messageDiv.style.color = "red";
       }
-    }
+    finally {
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Submit";
 
-  } catch (err) {
-    console.error("Submission error:", err);
-    alert("❌ Submission error.");
-    const messageDiv = document.getElementById("message");
-    if (messageDiv) {
-      messageDiv.textContent = "❌ Submission error.";
-      messageDiv.style.color = "red";
-    }
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Submit";
-    if (formClone && formClone.parentNode) {
-      document.body.removeChild(formClone);
-    }
+  // Remove the cloned form from the DOM after processing
+  if (formClone && formClone.parentNode) {
+    document.body.removeChild(formClone);
   }
-});
-</script>
+}
+  });
+    </script>
 
 
 
