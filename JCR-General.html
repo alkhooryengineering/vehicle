@@ -522,15 +522,15 @@ document.getElementById("jobForm").addEventListener("submit", async function (e)
     formClone.querySelector("#sig2").replaceWith(img2);
   }
 
-  formClone.style.position = 'absolute';
-  formClone.style.top = '-9999px';
-  formClone.style.left = '-9999px';
-  formClone.style.width = '210mm';
-  formClone.style.background = 'white';
-  formClone.style.zIndex = '10000';
-  formClone.style.padding = '0';
-  formClone.style.margin = '0';
-  formClone.style.boxSizing = 'border-box';
+ formClone.style.visibility = 'hidden';
+formClone.style.position = 'fixed';
+formClone.style.top = '0';
+formClone.style.left = '0';
+formClone.style.zIndex = '-1';
+formClone.style.width = '100%';
+formClone.style.background = 'white';
+formClone.style.boxSizing = 'border-box';
+
 
   document.body.appendChild(formClone);
 
