@@ -524,13 +524,17 @@ document.getElementById("jobForm").addEventListener("submit", async function (e)
       formClone.querySelector("#sig2").replaceWith(img2);
     }
 
-   formClone.style.position = "fixed";
+formClone.style.position = "absolute";
 formClone.style.top = "0";
 formClone.style.left = "0";
-formClone.style.width = "210mm"; // A4 width approx
-formClone.style.height = "297mm"; // A4 height approx
+formClone.style.margin = "0";
+formClone.style.padding = "0";
+formClone.style.width = "95%";
+formClone.style.minHeight = "100vh";
 formClone.style.zIndex = "10000";
-formClone.style.background = "white"; // ensure bg is white
+formClone.style.background = "white";
+formClone.style.boxSizing = "border-box";
+
 document.body.appendChild(formClone);
 
 
