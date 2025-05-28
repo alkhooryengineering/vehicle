@@ -475,14 +475,6 @@
 
 
 
-
-
-
-
-
-<!-- Load html2pdf.bundle.js first -->
-<script src="html2pdf.bundle.js"></script>
-
 <!-- PDF script -->
 <script>
 document.getElementById("jobForm").addEventListener("submit", async function (e) {
@@ -522,11 +514,10 @@ document.getElementById("jobForm").addEventListener("submit", async function (e)
     formClone.querySelector("#sig2").replaceWith(img2);
   }
 
- formClone.style.visibility = 'hidden';
-formClone.style.position = 'fixed';
+ formClone.style.position = 'absolute';
 formClone.style.top = '0';
-formClone.style.left = '0';
-formClone.style.zIndex = '-1';
+formClone.style.left = '-9999px'; // move it off-screen to avoid display but keep visible
+formClone.style.visibility = 'visible'; // ensure it's rendered
 formClone.style.width = '100%';
 formClone.style.background = 'white';
 formClone.style.boxSizing = 'border-box';
@@ -537,36 +528,53 @@ formClone.style.boxSizing = 'border-box';
   formClone.querySelectorAll("script, input[type='file'], button, #submitBtn").forEach(el => el.remove());
 
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    const opt = {
-      margin: 0,
-      filename: 'job_completion_form.pdf',
-      image: { type: 'jpeg', quality: 0.7 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-    };
+// Optional pause (can be removed if not needed)
+await new Promise(resolve => setTimeout(resolve, 500));
 
-    const pdf = await html2pdf().set(opt).from(formClone).toPdf().get('pdf');
-    const pdfBlob = pdf.output("blob");
+// ✅ Wait for all images in the cloned form to load
+await Promise.all(
+  Array.from(formClone.querySelectorAll("img")).map(img =>
+    img.complete ? Promise.resolve() :
+    new Promise(resolve => {
+      img.onload = img.onerror = resolve;
+    })
+  )
+);
 
-    const blobUrl = URL.createObjectURL(pdfBlob);
-    const a = document.createElement('a');
-    a.href = blobUrl;
-    a.download = 'job_completion_form.pdf';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(blobUrl);
+// ✅ Generate the PDF
+const opt = {
+  margin: 0,
+  filename: 'job_completion_form.pdf',
+  image: { type: 'jpeg', quality: 0.7 },
+  html2canvas: { scale: 2, useCORS: true },
+  jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+  pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+};
 
-    const formData = new FormData(document.getElementById("jobForm"));
-    formData.append("pdf", pdfBlob, "job_completion_form.pdf");
+const pdf = await html2pdf().set(opt).from(formClone).toPdf().get('pdf');
+const pdfBlob = pdf.output("blob");
 
-    const response = await fetch("https://ake-form-backend.onrender.com/send-pdf", {
-      method: "POST",
-      body: formData
-    });
+// ✅ Trigger download of PDF
+const blobUrl = URL.createObjectURL(pdfBlob);
+const a = document.createElement('a');
+a.href = blobUrl;
+a.download = 'job_completion_form.pdf';
+document.body.appendChild(a);
+a.click();
+a.remove();
+URL.revokeObjectURL(blobUrl);
+
+// ✅ Prepare and send form data
+const formData = new FormData(document.getElementById("jobForm"));
+formData.append("pdf", pdfBlob, "job_completion_form.pdf");
+
+const response = await fetch("https://ake-form-backend.onrender.com/send-pdf", {
+  method: "POST",
+  body: formData
+});
+
+    
 
     const messageDiv = document.getElementById("message");
 
