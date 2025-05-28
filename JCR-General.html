@@ -371,7 +371,7 @@
         </tr>
       </table>
 
-  
+  <br>
 
       <div class="signature-area">
         <div class="signature-strip">
@@ -421,26 +421,22 @@
           </tr>
         </table>
 
-        <div class="signature-canvas-container" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; margin-top: 0;">
+     <div class="signature-canvas-container">
 
-          <div>
-            
-            <div style="margin-left: 100px;">
-              <canvas id="sig1" class="signature-pad"></canvas>
-              <center>
-                <button type="button" onclick="clearSignature('sig1')">Clear AKE Sign</button>
-              </center>
-            </div>
-          </div>
+  <div class="signature-box">
+    <canvas id="sig1" class="signature-pad"></canvas>
+    <br>
+    <button type="button" onclick="clearSignature('sig1')">Clear AKE Sign</button>
+  </div>
 
-          <div>
-            
-            <canvas id="sig2" class="signature-pad"></canvas>
-            <center>
-              <button type="button" onclick="clearSignature('sig2')">Clear Verifier Sign</button>
-            </center>
-          </div>
-        </div>
+  <div class="signature-box">
+    <canvas id="sig2" class="signature-pad"></canvas>
+    <br>
+    <button type="button" onclick="clearSignature('sig2')">Clear Verifier Sign</button>
+  </div>
+
+</div>
+
 
         <br><br>
 
