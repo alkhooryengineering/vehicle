@@ -652,5 +652,105 @@
   }
 </script>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const editableFields = document.querySelectorAll(".editable");
+
+  editableFields.forEach(field => {
+    // Initialize with 1. if empty
+    if (!field.innerText.trim()) {
+      field.innerText = "1. ";
+    }
+
+    // Track current mode
+    let mode = "numeric"; // or "alphabetic"
+
+    field.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+
+        const lines = field.innerText.trim().split("\n");
+        const lastLine = lines[lines.length - 1];
+        let nextPrefix = "";
+
+        if (mode === "numeric") {
+          const match = lastLine.match(/^(\d+)\./);
+          if (match) {
+            nextPrefix = `${parseInt(match[1]) + 1}. `;
+          } else {
+            nextPrefix = "1. ";
+          }
+        } else if (mode === "alphabetic") {
+          const match = lastLine.match(/^([a-zA-Z])\./);
+          if (match) {
+            let charCode = match[1].toLowerCase().charCodeAt(0);
+            if (charCode < 122) {
+              nextPrefix = `${String.fromCharCode(charCode + 1)}. `;
+            } else {
+              nextPrefix = "a. "; // Reset if past z
+            }
+          } else {
+            nextPrefix = "a. ";
+          }
+        }
+
+        insertTextAtCursor("\n" + nextPrefix);
+      }
+    });
+
+    field.addEventListener("input", function () {
+      const text = field.innerText.trim();
+      if (/^a\./i.test(text)) {
+        mode = "alphabetic";
+      } else if (/^1\./.test(text)) {
+        mode = "numeric";
+      }
+    });
+  });
+
+  // Utility to insert text at cursor position
+  function insertTextAtCursor(text) {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    const textNode = document.createTextNode(text);
+    range.insertNode(textNode);
+
+    // Move the caret after the inserted text
+    range.setStartAfter(textNode);
+    range.setEndAfter(textNode);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
 </body>
 </html>
