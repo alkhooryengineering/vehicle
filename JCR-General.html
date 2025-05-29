@@ -50,36 +50,22 @@
       border-bottom: 1px solid #aaa;
       margin-top: 20px;
     }
-    .info-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      background-color: #eee;
-      padding: 15px;
-      border-bottom: 1px solid #ddd;
-      margin: 0;
-    }
+
+
 
     
 
-    /* Default (mobile) */
+.info-row {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 15px;
+}
+
 .info-block {
-  flex: 1 1 100%;
-}
-
-/* Tablet and above: allow multiple per row */
-@media (min-width: 768px) {
-  .info-block {
-    flex: 1 1 calc(50% - 10px);
-    min-width: 0;
-  }
-}
-
-/* Desktop: 3 per row */
-@media (min-width: 1024px) {
-  .info-block {
-    flex: 1 1 calc(33.333% - 10px);
-  }
+  flex: 0 0 250px;
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -231,6 +217,15 @@
     .submit-button:hover {
       background-color: #0056b3;
     }
+
+
+
+
+
+
+
+
+    
     /*@media (max-width: 768px) {
       .info-row {
         flex-direction: column;
