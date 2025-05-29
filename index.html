@@ -458,9 +458,9 @@
         return;
       }
 
-      selectedPhotos.forEach((file, index) => {
-        formData.append("photo" + index, file);
-      });
+     // selectedPhotos.forEach((file, index) => {   to send the photo in the email attachment , commented out
+       // formData.append("photo" + index, file);
+     // });
 
       const opt = {
         margin: 0,
