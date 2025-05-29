@@ -60,12 +60,19 @@
   flex-wrap: nowrap;
   overflow-x: auto;
   gap: 15px;
+  padding: 15px;
+  background-color: #eee;
+  border-bottom: 1px solid #ddd;
+  margin: 0;
+  scroll-snap-type: x mandatory;
 }
 
 .info-block {
-  flex: 0 0 250px;
+  flex: 0 0 auto; /* Don’t shrink/grow, fixed size */
+  width: 250px;
   display: flex;
   flex-direction: column;
+  scroll-snap-align: start;
 }
 
 
