@@ -697,17 +697,9 @@ document.addEventListener("DOMContentLoaded", () => {
           nextPrefix = "1. ";
         }
 
-        insertTextAtCursor("\n" + nextPrefix);
+        // Insert double newlines for a visual gap
+        insertTextAtCursor("\n\n" + nextPrefix);
       }
-    });
-
-    field.addEventListener("input", function () {
-      // This is optional if you want to auto-reset numeric mode on typing.
-      const lines = field.innerText.trim().split("\n");
-      const lastLine = lines[lines.length - 1].trim();
-      const isAlpha = /^[a-zA-Z]\./.test(lastLine);
-      const isNumeric = /^\d+\./.test(lastLine);
-      // You can store mode globally if needed, but we infer it per line now.
     });
   });
 
@@ -727,6 +719,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
+
 
 
 
