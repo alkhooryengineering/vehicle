@@ -337,7 +337,7 @@ input, select, textarea, button {
 
 
 
-@media print {
+/*@media print {
       body {
         background: white !important;
         background-image: none !important;
@@ -377,7 +377,18 @@ input, select, textarea, button {
 .container-wrapper {
   width: 100%;
   overflow-x: auto;
+}*/
+
+    /* Force desktop layout to stay as-is and scroll on small devices */
+.container-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
+
+.container {
+  min-width: 1000px; /* Forces scroll on mobile */
+}
+
 
     
 
