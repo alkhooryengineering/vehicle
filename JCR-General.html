@@ -337,84 +337,35 @@ input, select, textarea, button {
 
 
 
-@media (max-width: 768px) {
-  .custom-table {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-  }
+@media print {
+      body {
+        background: white !important;
+        background-image: none !important;
+      }
 
-  .custom-table tr {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-bottom: 10px;
-  }
+      .container {
+        margin: 0 !important;
+        padding: 10px !important;
+        background: white !important;
+        box-shadow: none !important;
+      }
 
-  .custom-table td {
-    width: 100% !important;
-    display: block;
-    box-sizing: border-box;
-  }
+      .header-image {
+        display: none;
+      }
 
-  .custom-table .narrow {
-    background-color: #f5f5f5;
-    font-weight: bold;
-  }
+      .signature-pad {
+        height: 80px !important;
+      }
 
-  .signature-strip {
-    flex-direction: column;
-    align-items: stretch;
-  }
+      button, #message {
+        display: none !important;
+      }
 
-  .signature-strip div {
-    width: 100%;
-  }
-
-  .signature-area > div {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .signature-area canvas {
-    width: 100% !important;
-  }
-
-  .signature-area button {
-    width: 100%;
-  }
-
-  .info-row {
-    flex-direction: column;
-  }
-
-  .info-block {
-    min-width: 100%;
-  }
-
-  .horizontal-label {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .horizontal-label input[type="date"] {
-    width: 100%;
-  }
-
-  .photo-grid img {
-    width: 100% !important;
-  }
-
-  .signature-canvas-container > div {
-    max-width: 100% !important;
-    flex: 1 1 100%;
-  }
-
-  .submit-button {
-    width: 100%;
-  }
-}
-
+      footer {
+        color: black !important;
+      }
+    }
 
 
 
