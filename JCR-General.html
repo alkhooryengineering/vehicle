@@ -246,10 +246,11 @@ input, select, textarea, button {
     }
 
 
-.no-print {
-    display: none !important;
+@media print {
+  .no-print {
+    display: none !important; /* Hide elements with .no-print class when printing */
+  }
 }
-
 
 
 
