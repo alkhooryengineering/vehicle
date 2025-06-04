@@ -661,12 +661,6 @@ input, select, textarea, button {
       return false;
     }
 
-    // Check signature pads if needed (optional)
-    // if (window.sigPad1.isEmpty()) {
-    //   alert("Please provide the first signature.");
-    //   return false;
-    // }
-
     return true;
   }
 
@@ -676,7 +670,10 @@ input, select, textarea, button {
     if (!validateForm()) return;
 
     const submitBtn = document.getElementById("submitBtn");
-    submitBtn.disabled = true;
+    const messageDiv = document.getElementById("message");
+
+    // Hide the submit button once it's clicked
+    submitBtn.style.display = "none";
 
     const form = document.getElementById("jobForm");
     const formData = new FormData(form);
@@ -694,16 +691,6 @@ input, select, textarea, button {
     if (sigBlob1) formData.append("signature1.png", sigBlob1, "signature1.png");
     if (sigBlob2) formData.append("signature2.png", sigBlob2, "signature2.png");
 
-    // Append photos as blobs from displayed images
-    //const photoGrid = document.getElementById("photoGrid");
-    // We do not have File objects stored separately, so we reconstruct blobs by fetching data URLs from images
-    //for (let i = 0; i < photoGrid.children.length; i++) {
-      //const img = photoGrid.children[i];
-      //const dataURL = img.src;
-      //const blob = dataURLtoBlob(dataURL);
-      //formData.append("photo" + i + ".jpeg", blob, "photo" + i + ".jpeg");
-    //}
-
     // PDF generation options
     const opt = {
       margin: 0,
@@ -713,8 +700,6 @@ input, select, textarea, button {
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
-
-    const messageDiv = document.getElementById("message");
 
     html2pdf().set(opt).from(document.getElementById('formToPDF')).toPdf().get('pdf').then(async function(pdf) {
       const pdfBlob = pdf.output("blob");
@@ -726,30 +711,20 @@ input, select, textarea, button {
           body: formData
         });
 
+        // Check if the response is OK
         if (response.ok) {
           messageDiv.textContent = "✅ Email Delivered";
           messageDiv.style.color = "green";
-          submitBtn.style.display = "none";
         } else {
           messageDiv.textContent = "❌ Submission failed. Please try again.";
           messageDiv.style.color = "red";
-          submitBtn.disabled = false;
         }
       } catch (error) {
         console.error("Submission error:", error);
         messageDiv.textContent = "❌ Submission failed. Please try again.";
         messageDiv.style.color = "red";
-        submitBtn.disabled = false;
       }
     });
-  }
-
-  // Helper: Convert dataURL to Blob
-  function dataURLtoBlob(dataurl) {
-    const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    for (let i = 0; i < n; i++) u8arr[i] = bstr.charCodeAt(i);
-    return new Blob([u8arr], { type: mime });
   }
 </script>
 
