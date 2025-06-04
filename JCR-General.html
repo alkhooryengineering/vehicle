@@ -676,7 +676,12 @@ input, select, textarea, button {
     if (!validateForm()) return;
 
     const submitBtn = document.getElementById("submitBtn");
+   
+    
     submitBtn.disabled = true;
+submitBtn.style.display = "none"; // Hide the Submit button
+messageDiv.style.display = "none"; // Hide the message (optional)
+
 
     const form = document.getElementById("jobForm");
     const formData = new FormData(form);
@@ -726,21 +731,18 @@ input, select, textarea, button {
           body: formData
         });
 
-        if (response.ok) {
-          messageDiv.textContent = "✅ Email Delivered";
-          messageDiv.style.color = "green";
-          submitBtn.style.display = "none";
-        } else {
-          messageDiv.textContent = "❌ Submission failed. Please try again.";
-          messageDiv.style.color = "red";
-          submitBtn.disabled = false;
-        }
-      } catch (error) {
-        console.error("Submission error:", error);
-        messageDiv.textContent = "❌ Submission failed. Please try again.";
-        messageDiv.style.color = "red";
-        submitBtn.disabled = false;
-      }
+       if (response.ok) {
+  messageDiv.textContent = "✅ Email Delivered";
+  messageDiv.style.color = "green";
+  // Do NOT show the button again on success
+} else {
+  messageDiv.textContent = "❌ Submission failed. Please try again.";
+  messageDiv.style.color = "red";
+  submitBtn.disabled = false;
+  submitBtn.style.display = "block"; // show the button again
+  messageDiv.style.display = "block"; // show message again
+}
+
     });
   }
 
