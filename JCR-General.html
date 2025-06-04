@@ -244,6 +244,19 @@ input, select, textarea, button {
     .submit-button:hover {
       background-color: #0056b3;
     }
+
+
+@media print {
+      .no-print {
+        display: none !important; /* Hide elements with .no-print class when printing */
+      }
+    }
+
+
+
+
+
+    
     /*@media (max-width: 768px) {
       .info-row {
         flex-direction: column;
@@ -396,15 +409,7 @@ input, select, textarea, button {
 
 
     
-@media print {
-      .no-print {
-        display: none !important; /* Hide elements with .no-print class when printing */
-      }
-    }
-
-    
-
-    
+   
 
     
   </style>
