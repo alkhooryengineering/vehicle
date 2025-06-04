@@ -670,17 +670,18 @@ input, select, textarea, button {
     return true;
   }
 
-  async function submitForm(event) {
-    event.preventDefault();
+ async function submitForm(event) {
+  event.preventDefault();
 
-    if (!validateForm()) return;
+  const messageDiv = document.getElementById("message"); // ✅ Now defined first
+  const submitBtn = document.getElementById("submitBtn");
 
-    const submitBtn = document.getElementById("submitBtn");
-   
-    
-    submitBtn.disabled = true;
-submitBtn.style.display = "none"; // Hide the Submit button
-messageDiv.style.display = "none"; // Hide the message (optional)
+  if (!validateForm()) return;
+
+  submitBtn.disabled = true;
+  submitBtn.style.display = "none"; // Hide the Submit button
+  messageDiv.style.display = "none"; // Hide the message (optional)
+
 
 
     const form = document.getElementById("jobForm");
