@@ -396,6 +396,11 @@ input, select, textarea, button {
 
 
     
+@media print {
+      .no-print {
+        display: none !important; /* Hide elements with .no-print class when printing */
+      }
+    }
 
     
 
@@ -574,7 +579,8 @@ input, select, textarea, button {
         </center>
       </div>
 
-      <button id="submitBtn" type="submit" class="submit-button">Submit</button>
+      <button id="submitBtn" type="submit" class="submit-button no-print">Submit</button>
+
       <div id="message" style="text-align: center; margin-top: 0px; margin-bottom:0px;"></div>
     </div>
   </form>
